@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +26,16 @@ import com.quranku.quranku_app.ui.Visibility
 import com.quranku.quranku_app.ui.Visibility_off
 import java.util.regex.Pattern
 
+import android.widget.Toast
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.quranku.quranku_app.ui.viewmodel.RegisterViewModel
+import kotlinx.coroutines.launch
+
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -37,6 +46,10 @@ fun RegisterScreen(navController: NavController) {
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var confirmPasswordError by remember { mutableStateOf<String?>(null) }
+
+    val context = LocalContext.current
+    val registerResponse by viewModel.registerResponse.collectAsState()
+    val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
         Column(
@@ -208,8 +221,13 @@ fun RegisterScreen(navController: NavController) {
                     passwordError = validatePassword(password)
                     confirmPasswordError = if (confirmPassword != password) "Passwords do not match" else null
 
-                    if (fullNameError == null && emailError == null && passwordError == null && confirmPasswordError == null) {
-                        // Handle successful registration logic here
+                    // Validasi data input sebelum mengirim
+                    if (fullName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && password == confirmPassword) {
+                        scope.launch {
+                            viewModel.registerUser(fullName, email, password)
+                        }
+                    } else {
+                        Toast.makeText(context, "Please fill out all fields correctly", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier
@@ -225,10 +243,25 @@ fun RegisterScreen(navController: NavController) {
                 Text(text = "Register", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
+            // Menampilkan Toast dan Navigasi ke Login saat registrasi berhasil
+            LaunchedEffect(registerResponse) {
+                registerResponse?.let { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    // Periksa apakah pesan menunjukkan keberhasilan registrasi
+                    if (message.contains("successfully", ignoreCase = true)) {
+                        // Navigasi ke layar login
+                        navController.navigate("login") {
+                            popUpTo("register") { inclusive = true }
+                        }
+                    }
+                    // Reset setelah menampilkan pesan
+                    viewModel.resetRegisterResponse()
+                }
+            }
+
             Spacer(modifier = Modifier.weight(1f)) // Spacer to push the ClickableText to the bottom
 
             // Already have an account? Clickable Text
-
             @Suppress("DEPRECATION")
             ClickableText(
                 text = androidx.compose.ui.text.AnnotatedString("Already have an account?"),
