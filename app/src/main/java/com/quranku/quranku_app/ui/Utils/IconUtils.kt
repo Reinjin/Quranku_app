@@ -1,4 +1,4 @@
-package com.quranku.quranku_app.ui
+package com.quranku.quranku_app.ui.Utils
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType

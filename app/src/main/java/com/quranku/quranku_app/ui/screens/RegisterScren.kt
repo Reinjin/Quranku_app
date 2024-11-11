@@ -22,15 +22,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.quranku.quranku_app.R
-import com.quranku.quranku_app.ui.Visibility
-import com.quranku.quranku_app.ui.Visibility_off
-import java.util.regex.Pattern
+import com.quranku.quranku_app.ui.Utils.Visibility
+import com.quranku.quranku_app.ui.Utils.Visibility_off
 
 import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.quranku.quranku_app.ui.Utils.validateEmail
+import com.quranku.quranku_app.ui.Utils.validatePassword
 import com.quranku.quranku_app.ui.viewmodel.RegisterViewModel
 import kotlinx.coroutines.launch
 
@@ -278,26 +279,7 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
     }
 }
 
-// Validasi email
-fun validateEmail(email: String): String? {
-    val emailRegex = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
-    return when {
-        email.isBlank() -> "Email is required"
-        !Pattern.matches(emailRegex, email) -> "Email format is invalid"
-        email.length < 5 || email.length > 90 -> "Email must be between 5 and 90 characters"
-        else -> null
-    }
-}
 
-// Validasi password
-fun validatePassword(password: String): String? {
-    val passwordRegex = "^(?=.*[A-Z])(?=.*\\d).{8,90}$" // Huruf besar, angka, panjang 8-90 karakter
-    return when {
-        password.isBlank() -> "Password is required"
-        !Pattern.matches(passwordRegex, password) -> "Password must contain at least one uppercase letter, one number, and be 8-90 characters long"
-        else -> null
-    }
-}
 
 
 @Preview(showBackground = true)
