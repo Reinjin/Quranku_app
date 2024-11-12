@@ -1,5 +1,7 @@
 package com.quranku.quranku_app.ui.screens
 
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,16 +26,11 @@ import androidx.navigation.compose.rememberNavController
 import com.quranku.quranku_app.R
 import com.quranku.quranku_app.ui.Utils.Visibility
 import com.quranku.quranku_app.ui.Utils.Visibility_off
-
-import android.widget.Toast
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.quranku.quranku_app.ui.Utils.validateEmail
 import com.quranku.quranku_app.ui.Utils.validatePassword
 import com.quranku.quranku_app.ui.viewmodel.RegisterViewModel
 import kotlinx.coroutines.launch
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
@@ -50,237 +47,247 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
 
     val context = LocalContext.current
     val registerResponse by viewModel.registerResponse.collectAsState()
+    val loadingState by viewModel.loadingState.collectAsState()
     val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues) // Menggunakan padding dari Scaffold
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(80.dp))
-
-            // Title
-            Text(
-                text = "Register",
-                fontSize = 50.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.blue_dark_light)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Subtitle
-            Text(
-                text = "Silahkan buat akunmu terlebih dahulu!",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Full Name TextField
-            OutlinedTextField(
-                value = fullName,
-                onValueChange = {
-                    fullName = it
-                    fullNameError = if (fullName.isBlank()) "Full name is required" else null
-                },
-                label = { Text("Full Name") },
-                isError = fullNameError != null,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light), // Warna ketika focused
-                    focusedLabelColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light) // Warna ketika label focused
-                ),
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Layout utama aplikasi
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            if (fullNameError != null) {
-                Text(
-                    text = fullNameError!!,
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Email TextField
-            OutlinedTextField(
-                value = email,
-                onValueChange = {
-                    email = it
-                    emailError = validateEmail(email)
-                },
-                label = { Text("Email") },
-                isError = emailError != null,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = if (emailError != null) Color.Red else colorResource(id = R.color.blue_dark_light), // Warna ketika focused
-                    focusedLabelColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light) // Warna ketika label focused
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            if (emailError != null) {
-                Text(
-                    text = emailError!!,
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Password TextField
-            OutlinedTextField(
-                value = password,
-                onValueChange = {
-                    password = it
-                    passwordError = validatePassword(password)
-                },
-                label = { Text("Password") },
-                isError = passwordError != null,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = if (passwordError != null) Color.Red else colorResource(id = R.color.blue_dark_light), // Warna ketika focused
-                    focusedLabelColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light) // Warna ketika label focused
-                ),
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    val image = if (showPassword) Visibility else Visibility_off
-                    IconButton(onClick = { showPassword = !showPassword }) {
-                        Icon(imageVector = image, contentDescription = if (showPassword) "Hide password" else "Show password")
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            if (passwordError != null) {
-                Text(
-                    text = passwordError!!,
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Confirm Password TextField
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = {
-                    confirmPassword = it
-                    confirmPasswordError = if (confirmPassword != password) "Passwords do not match" else null
-                },
-                label = { Text("Confirm Password") },
-                isError = confirmPasswordError != null,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = if (confirmPasswordError != null) Color.Red else colorResource(id = R.color.blue_dark_light), // Warna ketika focused
-                    focusedLabelColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light) // Warna ketika label focused
-                ),
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    val image = if (showPassword) Visibility else Visibility_off
-                    IconButton(onClick = { showPassword = !showPassword }) {
-                        Icon(imageVector = image, contentDescription = if (showPassword) "Hide password" else "Show password")
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-            if (confirmPasswordError != null) {
-                Text(
-                    text = confirmPasswordError!!,
-                    color = Color.Red,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            // Register Button
-            Button(
-                onClick = {
-                    fullNameError = if (fullName.isBlank()) "Full name is required" else null
-                    emailError = validateEmail(email)
-                    passwordError = validatePassword(password)
-                    confirmPasswordError = if (confirmPassword != password) "Passwords do not match" else null
-
-                    // Validasi data input sebelum mengirim
-                    if (fullName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && password == confirmPassword) {
-                        scope.launch {
-                            viewModel.registerUser(fullName, email, password)
-                        }
-                    } else {
-                        Toast.makeText(context, "Please fill out all fields correctly", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .height(48.dp),
-                shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.blue_dark),
-                    contentColor = Color.White
-                )
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Register", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(80.dp))
+
+                // Title
+                Text(
+                    text = "Register",
+                    fontSize = 50.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.blue_dark_light)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Subtitle
+                Text(
+                    text = "Silahkan buat akunmu terlebih dahulu!",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Full Name TextField
+                OutlinedTextField(
+                    value = fullName,
+                    onValueChange = {
+                        fullName = it
+                        fullNameError = if (fullName.isBlank()) "Full name is required" else null
+                    },
+                    label = { Text("Full Name") },
+                    isError = fullNameError != null,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light),
+                        focusedLabelColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                if (fullNameError != null) {
+                    Text(
+                        text = fullNameError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Email TextField
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        emailError = validateEmail(email)
+                    },
+                    label = { Text("Email") },
+                    isError = emailError != null,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = if (emailError != null) Color.Red else colorResource(id = R.color.blue_dark_light),
+                        focusedLabelColor = if (emailError != null) Color.Red else colorResource(id = R.color.blue_dark_light)
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                if (emailError != null) {
+                    Text(
+                        text = emailError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Password TextField
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        passwordError = validatePassword(password)
+                    },
+                    label = { Text("Password") },
+                    isError = passwordError != null,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = if (passwordError != null) Color.Red else colorResource(id = R.color.blue_dark_light),
+                        focusedLabelColor = if (passwordError != null) Color.Red else colorResource(id = R.color.blue_dark_light)
+                    ),
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val image = if (showPassword) Visibility else Visibility_off
+                        IconButton(onClick = { showPassword = !showPassword }) {
+                            Icon(imageVector = image, contentDescription = if (showPassword) "Hide password" else "Show password")
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                if (passwordError != null) {
+                    Text(
+                        text = passwordError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Confirm Password TextField
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = {
+                        confirmPassword = it
+                        confirmPasswordError = if (confirmPassword != password) "Passwords do not match" else null
+                    },
+                    label = { Text("Confirm Password") },
+                    isError = confirmPasswordError != null,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = if (confirmPasswordError != null) Color.Red else colorResource(id = R.color.blue_dark_light),
+                        focusedLabelColor = if (confirmPasswordError != null) Color.Red else colorResource(id = R.color.blue_dark_light)
+                    ),
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val image = if (showPassword) Visibility else Visibility_off
+                        IconButton(onClick = { showPassword = !showPassword }) {
+                            Icon(imageVector = image, contentDescription = if (showPassword) "Hide password" else "Show password")
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                if (confirmPasswordError != null) {
+                    Text(
+                        text = confirmPasswordError!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                // Register Button
+                Button(
+                    onClick = {
+                        fullNameError = if (fullName.isBlank()) "Full name is required" else null
+                        emailError = validateEmail(email)
+                        passwordError = validatePassword(password)
+                        confirmPasswordError = if (confirmPassword != password) "Passwords do not match" else null
+
+                        if (fullName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && password == confirmPassword) {
+                            scope.launch {
+                                viewModel.registerUser(fullName, email, password)
+                            }
+                        } else {
+                            Toast.makeText(context, "Please fill out all fields correctly", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .height(48.dp),
+                    shape = MaterialTheme.shapes.medium,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.blue_dark),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Register", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
+
+                Spacer(modifier = Modifier.weight(1f)) // Push the ClickableText to the bottom
+
+                // Already have an account? Clickable Text
+                @Suppress("DEPRECATION")
+                ClickableText(
+                    text = androidx.compose.ui.text.AnnotatedString("Already have an account?"),
+                    onClick = { navController.navigate("login") },
+                    style = TextStyle(
+                        color = colorResource(id = R.color.blue_dark_light),
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // ProgressBar overlay yang berada di tengah layar saat loadingState bernilai true
+            if (loadingState) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0x80000000)), // Overlay semi-transparent
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = colorResource(id = R.color.blue_dark_light)
+                    )
+                }
             }
 
             // Menampilkan Toast dan Navigasi ke Login saat registrasi berhasil
             LaunchedEffect(registerResponse) {
                 registerResponse?.let { message ->
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                    // Periksa apakah pesan menunjukkan keberhasilan registrasi
                     if (message.contains("successfully", ignoreCase = true)) {
-                        // Navigasi ke layar login
                         navController.navigate("login") {
                             popUpTo("register") { inclusive = true }
                         }
                     }
-                    // Reset setelah menampilkan pesan
                     viewModel.resetRegisterResponse()
                 }
             }
-
-            Spacer(modifier = Modifier.weight(1f)) // Spacer to push the ClickableText to the bottom
-
-            // Already have an account? Clickable Text
-            @Suppress("DEPRECATION")
-            ClickableText(
-                text = androidx.compose.ui.text.AnnotatedString("Already have an account?"),
-                onClick = { navController.navigate("login") },
-                style = TextStyle(
-                    color = colorResource(id = R.color.blue_dark_light),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
         }
     }
 }
-
-
-
 
 @Preview(showBackground = true)
 @Composable
