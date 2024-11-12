@@ -5,6 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,7 +37,7 @@ import kotlinx.coroutines.launch
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
+fun RegisterScreen(navController: NavController = rememberNavController(), viewModel: RegisterViewModel = hiltViewModel()) {
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -93,6 +97,9 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                         fullNameError = if (fullName.isBlank()) "Full name is required" else null
                     },
                     label = { Text("Full Name") },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Password Icon")
+                    },
                     isError = fullNameError != null,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = if (fullNameError != null) Color.Red else colorResource(id = R.color.blue_dark_light),
@@ -121,6 +128,9 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                         emailError = validateEmail(email)
                     },
                     label = { Text("Email") },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Email, contentDescription = "Password Icon")
+                    },
                     isError = emailError != null,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = if (emailError != null) Color.Red else colorResource(id = R.color.blue_dark_light),
@@ -156,6 +166,9 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                         focusedLabelColor = if (passwordError != null) Color.Red else colorResource(id = R.color.blue_dark_light)
                     ),
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Lock, contentDescription = "Password Icon")
+                    },
                     trailingIcon = {
                         val image = if (showPassword) Visibility else Visibility_off
                         IconButton(onClick = { showPassword = !showPassword }) {
@@ -192,6 +205,9 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                         focusedLabelColor = if (confirmPasswordError != null) Color.Red else colorResource(id = R.color.blue_dark_light)
                     ),
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Lock, contentDescription = "Password Icon")
+                    },
                     trailingIcon = {
                         val image = if (showPassword) Visibility else Visibility_off
                         IconButton(onClick = { showPassword = !showPassword }) {
@@ -289,8 +305,9 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
-    RegisterScreen(navController = rememberNavController())
+    RegisterScreen()
 }

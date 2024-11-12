@@ -21,7 +21,7 @@ fun AppNavigation(authViewModel: AuthViewModel) {
     ) {
         composable("splash") { SplashScreen(navController, authViewModel) }
         composable("welcome") { WelcomeScreen(navController) }
-        composable("login") { LoginScreen(navController, authViewModel) }
+        composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("home") { HomeScreen(navController) }
     }
