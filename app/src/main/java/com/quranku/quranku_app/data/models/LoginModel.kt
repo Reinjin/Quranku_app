@@ -1,7 +1,8 @@
 package com.quranku.quranku_app.data.models
 
 data class LoginRequest(
-    val email: String, val password: String
+    val email: String,
+    val password: String
 )
 
 data class LoginResponse(

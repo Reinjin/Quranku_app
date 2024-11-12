@@ -1,6 +1,7 @@
 package com.quranku.quranku_app.data.repositorys
 
 import com.quranku.quranku_app.data.api.ApiService
+import com.quranku.quranku_app.data.models.RegisterRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.json.JSONObject
@@ -11,12 +12,7 @@ class RegisterRepository @Inject constructor(
 ) {
     fun registerUser(fullName: String, email: String, password: String): Flow<Result<String>> = flow {
         try {
-            val data = mapOf(
-                "full_name" to fullName,
-                "email" to email,
-                "password" to password
-            )
-            val response = apiService.registerUser(data)
+            val response = apiService.registerUser(RegisterRequest(fullName, email, password))
             if (response.isSuccessful && response.body() != null) {
                 emit(Result.success(response.body()!!.msg)) // Mengirim pesan sukses
             } else {

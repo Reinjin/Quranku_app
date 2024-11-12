@@ -265,7 +265,7 @@ fun RegisterScreen(navController: NavController = rememberNavController(), viewM
                 @Suppress("DEPRECATION")
                 ClickableText(
                     text = androidx.compose.ui.text.AnnotatedString("Already have an account?"),
-                    onClick = { navController.navigate("login") },
+                    onClick = { navController.navigate("login"){ popUpTo("register") {inclusive = true} } },
                     style = TextStyle(
                         color = colorResource(id = R.color.blue_dark_light),
                         fontSize = 14.sp,

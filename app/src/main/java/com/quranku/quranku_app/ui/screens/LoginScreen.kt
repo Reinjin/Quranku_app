@@ -180,7 +180,7 @@ fun LoginScreen(navController: NavController = rememberNavController(), viewMode
                 @Suppress("DEPRECATION")
                 ClickableText(
                     text = androidx.compose.ui.text.AnnotatedString("Create an account"),
-                    onClick = { navController.navigate("register") },
+                    onClick = { navController.navigate("register"){ popUpTo("login") {inclusive = true} } },
                     style = TextStyle(
                         color = colorResource(id = R.color.blue_dark_light),
                         fontSize = 14.sp,
@@ -208,7 +208,7 @@ fun LoginScreen(navController: NavController = rememberNavController(), viewMode
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     if (message == "Login Successfully") {
                         navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                            popUpTo("welcome") {inclusive = true}
                         }
                     }
                     viewModel.resetLoginResponse()
