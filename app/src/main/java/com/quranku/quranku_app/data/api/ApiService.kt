@@ -2,10 +2,13 @@ package com.quranku.quranku_app.data.api
 
 import com.quranku.quranku_app.data.models.LoginRequest
 import com.quranku.quranku_app.data.models.LoginResponse
+import com.quranku.quranku_app.data.models.ProfileResponse
 import com.quranku.quranku_app.data.models.RegisterRequest
 import com.quranku.quranku_app.data.models.RegisterResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiService {
@@ -16,4 +19,9 @@ interface ApiService {
     @POST("/auth/login")
     suspend fun loginUser(@Body data: LoginRequest)
     : Response<LoginResponse>
+
+    @GET("user/profile")
+    suspend fun getProfile(
+        @Header("Authorization") token: String
+    ): Response<ProfileResponse>
 }
