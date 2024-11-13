@@ -73,6 +73,16 @@ dependencies {
     // Retrofit for networking
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    //gms location
+    implementation(libs.play.services.location)
+
+    //kotlin coroutine
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    //Compose Accompanist Permission
+    implementation(libs.accompanist.permissions)
+
 }
 
 kapt {

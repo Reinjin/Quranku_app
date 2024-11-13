@@ -3,6 +3,7 @@ package com.quranku.quranku_app.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quranku.quranku_app.data.models.HurufHijaiyah
+import com.quranku.quranku_app.data.models.PrayerTimesResponse
 import com.quranku.quranku_app.data.models.hurufHijaiyahList
 import com.quranku.quranku_app.data.repositorys.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,8 +32,14 @@ class HomeViewModel @Inject constructor(
     private val _userName = MutableStateFlow<String?>(null)
     val userName: StateFlow<String?> = _userName
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _errorMessageUser = MutableStateFlow<String?>(null)
+    val errorMessageUser: StateFlow<String?> = _errorMessageUser
+
+    private val _prayerTimes = MutableStateFlow<PrayerTimesResponse?>(null)
+    val prayerTimes: StateFlow<PrayerTimesResponse?> = _prayerTimes
+
+    private val _errorMessageTimes = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _errorMessageTimes
 
     init {
         viewModelScope.launch {
@@ -44,6 +51,7 @@ class HomeViewModel @Inject constructor(
                 val newDate = getCurrentDate()
                 if (newDate != _currentDate.value) {
                     _currentDate.value = newDate
+                    loadPrayerTimes()
                 }
 
                 delay(1000L) // Delay 1 detik
@@ -57,7 +65,19 @@ class HomeViewModel @Inject constructor(
             result.onSuccess { name ->
                 _userName.value = name
             }.onFailure { error ->
-                _errorMessage.value = error.message
+                _errorMessageUser.value = error.message
+            }
+        }
+    }
+
+    fun loadPrayerTimes() {
+        viewModelScope.launch {
+            val result = homeRepository.getPrayerTimes()
+
+            if (result.isSuccess) {
+                _prayerTimes.value = result.getOrNull()
+            } else {
+                _errorMessageTimes.value = result.exceptionOrNull()?.message
             }
         }
     }

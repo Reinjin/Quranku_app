@@ -23,30 +23,90 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.isGranted
 import com.quranku.quranku_app.R
 import com.quranku.quranku_app.data.models.HurufHijaiyah
 import com.quranku.quranku_app.ui.viewmodel.HomeViewModel
+import com.google.accompanist.permissions.rememberPermissionState
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.shouldShowRationale
 
 
-
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
     homeViewModel : HomeViewModel = hiltViewModel()
 ) {
+    // Inisialisasi izin lokasi
     val context = LocalContext.current
+    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    var showRationaleDialog by remember { mutableStateOf(false) }
 
-    val cityName = "Kudus" // Placeholder, replace with actual city name retrieval
+    // Meluncurkan permintaan izin jika belum disetujui dan memperbarui statusnya
+    LaunchedEffect(locationPermissionState.status.isGranted) {
+        if (!locationPermissionState.status.isGranted && !showRationaleDialog) {
+            locationPermissionState.launchPermissionRequest()
+            if(!locationPermissionState.status.isGranted && !locationPermissionState.status.shouldShowRationale){
+                showRationaleDialog = true
+            }
+        } else if (locationPermissionState.status.isGranted) {
+            showRationaleDialog = false
+            // Setelah izin diberikan, panggil loadPrayerTimes
+            homeViewModel.loadPrayerTimes()
+        }
+    }
+
+    // Menjalankan pengambilan nama pengguna
+    LaunchedEffect(Unit) {
+        homeViewModel.fetchUserName()
+    }
+
+
+    // Menampilkan dialog saat izin ditolak permanen
+    if (showRationaleDialog) {
+        AlertDialog(
+            containerColor = Color.White,
+            textContentColor = Color.Black,
+            onDismissRequest = { showRationaleDialog = false },
+            title = { Text("Izin Lokasi Diperlukan") },
+            text = { Text("Untuk menggunakan fitur Waktu Sholat, izinkan akses lokasi di pengaturan aplikasi.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    // Buka pengaturan aplikasi
+                    context.startActivity(
+                        Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", context.packageName, null)
+                        )
+                    )
+                    showRationaleDialog = false
+                }) {
+                    Text("Buka Pengaturan", color = colorResource(id = R.color.blue_dark))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRationaleDialog = false }) {
+                    Text("Batal", color = colorResource(id = R.color.blue_dark))
+                }
+            }
+        )
+    }
+
     // Mendapatkan date dan time saat ini
     val currentTime by homeViewModel.currentTime.collectAsState()
     val currentDate by homeViewModel.currentDate.collectAsState()
 
     val userName by homeViewModel.userName.collectAsState()
-    val errorMessage by homeViewModel.errorMessage.collectAsState()
+    val errorMessage by homeViewModel.errorMessageUser.collectAsState()
 
-    LaunchedEffect(Unit) {
-        homeViewModel.fetchUserName()
-    }
+    val prayerTimes by homeViewModel.prayerTimes.collectAsState()
+    val error by homeViewModel.error.collectAsState()
+
 
     Scaffold { paddingValues ->
         // Membungkus Column dengan Box agar padding luar memiliki warna putih
@@ -77,7 +137,7 @@ fun HomeScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "   $userName",
+                    text = "   ${userName ?: "-----"}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = colorResource(id = R.color.blue_dark),
@@ -107,7 +167,7 @@ fun HomeScreen(
                         ) {
                             // Text di sebelah kiri
                             Text(
-                                text = "$cityName, $currentDate",
+                                text = "${prayerTimes?.City ?: "---"}, $currentDate",
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )
@@ -125,11 +185,11 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            PrayerTimeColumn("Subuh", "--:--")
-                            PrayerTimeColumn("Dzuhur", "--:--")
-                            PrayerTimeColumn("Ashar", "--:--")
-                            PrayerTimeColumn("Maghrib", "--:--")
-                            PrayerTimeColumn("Isya", "--:--")
+                            PrayerTimeColumn("Subuh", prayerTimes?.Fajr ?: "--:--")
+                            PrayerTimeColumn("Dzuhur", prayerTimes?.Dhuhr ?: "--:--")
+                            PrayerTimeColumn("Ashar", prayerTimes?.Asr ?: "--:--")
+                            PrayerTimeColumn("Maghrib", prayerTimes?.Maghrib ?: "--:--")
+                            PrayerTimeColumn("Isya", prayerTimes?.Isha ?: "--:--")
                         }
                     }
                 }

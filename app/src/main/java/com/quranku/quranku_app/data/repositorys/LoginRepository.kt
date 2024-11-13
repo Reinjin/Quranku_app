@@ -16,9 +16,15 @@ class LoginRepository @Inject constructor(
             if (response.isSuccessful && response.body() != null) {
                 emit(Result.success(response.body()!!.access_token))
             } else {
-                val errorBody = response.errorBody()?.string()
-                val errorMsg = JSONObject(errorBody ?: "{}").optString("msg", "Unknown error")
-                emit(Result.failure(Exception(errorMsg)))
+                // Parsing error body JSON untuk mengambil pesan dari "msg"
+                val errorMsg = response.errorBody()?.string()?.let {
+                    try {
+                        JSONObject(it).getString("msg")
+                    } catch (e: Exception) {
+                        "Unknown error" // Pesan default jika parsing gagal
+                    }
+                } ?: "Unknown error"
+                emit(Result.failure(Exception(errorMsg))) // Mengirim pesan error yang diambil dari JSON
             }
         } catch (e: Exception) {
             emit(Result.failure(e))

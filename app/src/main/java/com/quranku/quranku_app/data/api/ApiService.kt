@@ -2,6 +2,8 @@ package com.quranku.quranku_app.data.api
 
 import com.quranku.quranku_app.data.models.LoginRequest
 import com.quranku.quranku_app.data.models.LoginResponse
+import com.quranku.quranku_app.data.models.PrayerTimesRequest
+import com.quranku.quranku_app.data.models.PrayerTimesResponse
 import com.quranku.quranku_app.data.models.ProfileResponse
 import com.quranku.quranku_app.data.models.RegisterRequest
 import com.quranku.quranku_app.data.models.RegisterResponse
@@ -24,4 +26,10 @@ interface ApiService {
     suspend fun getProfile(
         @Header("Authorization") token: String
     ): Response<ProfileResponse>
+
+    @POST("/utils/prayer_times")
+    suspend fun getPrayerTimes(
+        @Header("Authorization") token: String,
+        @Body data: PrayerTimesRequest
+    ): Response<PrayerTimesResponse>
 }
