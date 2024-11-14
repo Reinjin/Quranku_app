@@ -38,6 +38,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.shouldShowRationale
 import com.quranku.quranku_app.ui.util.Rotate_left
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -48,6 +51,8 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel : HomeViewModel = hiltViewModel()
 ) {
+    val hurufHijaiyahList by homeViewModel.hurufHijaiyahLists.collectAsState()
+
     // Mendapatkan date dan time saat ini
     val currentTime by homeViewModel.currentTime.collectAsState()
     val currentDate by homeViewModel.currentDate.collectAsState()
@@ -103,7 +108,15 @@ fun HomeScreen(
             textContentColor = Color.Black,
             onDismissRequest = { showRationaleDialog = false },
             title = { Text("Izin Lokasi Diperlukan") },
-            text = { Text("Untuk menggunakan fitur Waktu Sholat, izinkan akses lokasi di pengaturan aplikasi secara manual.") },
+            text = {Text(
+                text = buildAnnotatedString {
+                    append("Untuk menggunakan fitur Waktu Sholat, izinkan akses ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Lokasi Presisi")
+                    }
+                    append(" di pengaturan aplikasi secara manual.")
+                }
+            )},
             confirmButton = {
                 TextButton(onClick = {
                     // Buka pengaturan aplikasi
@@ -274,7 +287,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Hijaiyah Grid
-                HijaiyahGrid(hurufHijaiyahList = homeViewModel.hurufHijaiyahLists)
+                HijaiyahGrid(hurufHijaiyahList = hurufHijaiyahList )
             }
         }
     }

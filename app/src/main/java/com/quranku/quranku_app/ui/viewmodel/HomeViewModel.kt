@@ -21,7 +21,8 @@ class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository
 ) : ViewModel() {
 
-    val hurufHijaiyahLists : List<HurufHijaiyah> = hurufHijaiyahList
+    private val _hurufHijaiyahLists = MutableStateFlow<List<HurufHijaiyah>>(emptyList())
+    val hurufHijaiyahLists: StateFlow<List<HurufHijaiyah>> = _hurufHijaiyahLists
 
     private val _currentTime = MutableStateFlow(getCurrentTime())
     val currentTime: StateFlow<String> = _currentTime
@@ -42,6 +43,8 @@ class HomeViewModel @Inject constructor(
     val errorMessageTimes: StateFlow<String?> = _errorMessageTimes
 
     init {
+        _hurufHijaiyahLists.value = hurufHijaiyahList
+
         viewModelScope.launch {
             while (true) {
                 val newTime = getCurrentTime()
