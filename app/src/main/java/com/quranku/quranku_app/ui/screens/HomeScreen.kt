@@ -32,8 +32,14 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.widget.Toast
+import androidx.compose.foundation.layout.Row
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.shouldShowRationale
+import com.quranku.quranku_app.ui.util.Rotate_left
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -42,28 +48,51 @@ fun HomeScreen(
     navController: NavController,
     homeViewModel : HomeViewModel = hiltViewModel()
 ) {
+    // Mendapatkan date dan time saat ini
+    val currentTime by homeViewModel.currentTime.collectAsState()
+    val currentDate by homeViewModel.currentDate.collectAsState()
+
+    val userName by homeViewModel.userName.collectAsState()
+    val errorMessageUser by homeViewModel.errorMessageUser.collectAsState()
+
+    val prayerTimes by homeViewModel.prayerTimes.collectAsState()
+    val errorMessageTimes by homeViewModel.errorMessageTimes.collectAsState()
+
     // Inisialisasi izin lokasi
     val context = LocalContext.current
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     var showRationaleDialog by remember { mutableStateOf(false) }
 
+    val coroutineScope = rememberCoroutineScope() // Membuat CoroutineScope
+
+
     // Meluncurkan permintaan izin jika belum disetujui dan memperbarui statusnya
     LaunchedEffect(locationPermissionState.status.isGranted) {
         if (!locationPermissionState.status.isGranted && !showRationaleDialog) {
             locationPermissionState.launchPermissionRequest()
-            if(!locationPermissionState.status.isGranted && !locationPermissionState.status.shouldShowRationale){
+            if(!locationPermissionState.status.isGranted && locationPermissionState.status.shouldShowRationale){
                 showRationaleDialog = true
             }
         } else if (locationPermissionState.status.isGranted) {
             showRationaleDialog = false
             // Setelah izin diberikan, panggil loadPrayerTimes
             homeViewModel.loadPrayerTimes()
+            delay(2000)
+            if (errorMessageTimes != null) {
+                Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_LONG).show()
+                homeViewModel.reseterrorMessageTimes()
+            }
         }
     }
 
     // Menjalankan pengambilan nama pengguna
     LaunchedEffect(Unit) {
         homeViewModel.fetchUserName()
+        delay(2000)
+        if (errorMessageUser != null) {
+            Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_LONG).show()
+            homeViewModel.reseterrorMessageUser()
+        }
     }
 
 
@@ -74,7 +103,7 @@ fun HomeScreen(
             textContentColor = Color.Black,
             onDismissRequest = { showRationaleDialog = false },
             title = { Text("Izin Lokasi Diperlukan") },
-            text = { Text("Untuk menggunakan fitur Waktu Sholat, izinkan akses lokasi di pengaturan aplikasi.") },
+            text = { Text("Untuk menggunakan fitur Waktu Sholat, izinkan akses lokasi di pengaturan aplikasi secara manual.") },
             confirmButton = {
                 TextButton(onClick = {
                     // Buka pengaturan aplikasi
@@ -96,16 +125,6 @@ fun HomeScreen(
             }
         )
     }
-
-    // Mendapatkan date dan time saat ini
-    val currentTime by homeViewModel.currentTime.collectAsState()
-    val currentDate by homeViewModel.currentDate.collectAsState()
-
-    val userName by homeViewModel.userName.collectAsState()
-    val errorMessage by homeViewModel.errorMessageUser.collectAsState()
-
-    val prayerTimes by homeViewModel.prayerTimes.collectAsState()
-    val error by homeViewModel.error.collectAsState()
 
 
     Scaffold { paddingValues ->
@@ -173,12 +192,54 @@ fun HomeScreen(
                             )
 
                             // Text di sebelah kanan
-                            Text(
-                                text = currentTime,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.blue_dark)
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                val image = Rotate_left
+                                IconButton(
+                                    onClick = {
+                                    if (!locationPermissionState.status.isGranted && !showRationaleDialog) {
+                                        locationPermissionState.launchPermissionRequest()
+                                        if(!locationPermissionState.status.isGranted && !locationPermissionState.status.shouldShowRationale){
+                                            showRationaleDialog = true
+                                        }
+                                    } else if (locationPermissionState.status.isGranted) {
+                                        showRationaleDialog = false
+                                        homeViewModel.resetNameAndTimes()
+                                        // Setelah izin diberikan, panggil loadPrayerTimes
+                                        homeViewModel.loadPrayerTimes()
+                                        homeViewModel.fetchUserName()
+                                        coroutineScope.launch{
+                                            delay(2000)
+                                            if (errorMessageTimes != null) {
+                                                Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_LONG).show()
+                                                homeViewModel.reseterrorMessageTimes()
+                                            }else if (errorMessageUser != null) {
+                                                Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_LONG).show()
+                                                homeViewModel.reseterrorMessageUser()
+                                            }
+                                        }
+                                    }
+                                    },
+                                    modifier = Modifier.size(20.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = image,
+                                        contentDescription = "Load Prayer Times",
+                                        modifier = Modifier.size(20.dp), // Sesuaikan ukuran ikon
+                                        tint = colorResource(id = R.color.blue_dark)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(4.dp)) // Spacer untuk jarak antara ikon dan teks
+
+                                Text(
+                                    text = currentTime,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.blue_dark)
+                                )
+                            }
+
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(

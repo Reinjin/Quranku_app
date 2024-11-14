@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor(
     val prayerTimes: StateFlow<PrayerTimesResponse?> = _prayerTimes
 
     private val _errorMessageTimes = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _errorMessageTimes
+    val errorMessageTimes: StateFlow<String?> = _errorMessageTimes
 
     init {
         viewModelScope.launch {
@@ -52,6 +52,7 @@ class HomeViewModel @Inject constructor(
                 if (newDate != _currentDate.value) {
                     _currentDate.value = newDate
                     loadPrayerTimes()
+
                 }
 
                 delay(1000L) // Delay 1 detik
@@ -66,6 +67,8 @@ class HomeViewModel @Inject constructor(
                 _userName.value = name
             }.onFailure { error ->
                 _errorMessageUser.value = error.message
+                delay(5000)
+                reseterrorMessageUser()
             }
         }
     }
@@ -78,6 +81,8 @@ class HomeViewModel @Inject constructor(
                 _prayerTimes.value = result.getOrNull()
             } else {
                 _errorMessageTimes.value = result.exceptionOrNull()?.message
+                delay(5000)
+                reseterrorMessageTimes()
             }
         }
     }
@@ -90,5 +95,18 @@ class HomeViewModel @Inject constructor(
     private fun getCurrentDate(): String {
         val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         return sdf.format(Date())
+    }
+
+    fun reseterrorMessageUser() {
+        _errorMessageUser.value = null
+    }
+
+    fun reseterrorMessageTimes() {
+        _errorMessageTimes.value = null
+    }
+
+    fun resetNameAndTimes(){
+        _userName.value = null
+        _prayerTimes.value = null
     }
 }

@@ -1,4 +1,4 @@
-package com.quranku.quranku_app.ui.Utils
+package com.quranku.quranku_app.ui.util
 
 import java.util.regex.Pattern
 

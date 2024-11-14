@@ -21,13 +21,13 @@ class LoginRepository @Inject constructor(
                     try {
                         JSONObject(it).getString("msg")
                     } catch (e: Exception) {
-                        "Unknown error" // Pesan default jika parsing gagal
+                        "Sorry, Try again later" // Pesan default jika parsing gagal
                     }
-                } ?: "Unknown error"
+                } ?: "Can't Connect to Server"
                 emit(Result.failure(Exception(errorMsg))) // Mengirim pesan error yang diambil dari JSON
             }
         } catch (e: Exception) {
-            emit(Result.failure(e))
+            emit(Result.failure(Exception("Can't connect to server")))
         }
     }
 }

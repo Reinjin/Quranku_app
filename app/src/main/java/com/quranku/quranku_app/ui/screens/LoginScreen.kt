@@ -28,10 +28,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.quranku.quranku_app.R
-import com.quranku.quranku_app.ui.Utils.Visibility
-import com.quranku.quranku_app.ui.Utils.Visibility_off
-import com.quranku.quranku_app.ui.Utils.validateEmail
-import com.quranku.quranku_app.ui.Utils.validatePassword
+import com.quranku.quranku_app.ui.util.Visibility
+import com.quranku.quranku_app.ui.util.Visibility_off
+import com.quranku.quranku_app.ui.util.validateEmail
+import com.quranku.quranku_app.ui.util.validatePassword
 import com.quranku.quranku_app.ui.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 

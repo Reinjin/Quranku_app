@@ -30,18 +30,19 @@ class HomeRepository @Inject constructor(
                     val fullName = response.body()?.full_name ?: ""
                     Result.success(fullName)
                 } else {
-                    val errorBody = response.errorBody()?.string() ?: ""
-                    val errorMessage = try {
-                        JSONObject(errorBody).getString("message")
-                    } catch (e: Exception) {
-                        "Unknown error occurred"
-                    }
-                    Result.failure(Exception(errorMessage))
+                    val errorMsg = response.errorBody()?.string()?.let {
+                        try {
+                            JSONObject(it).getString("message")
+                        }catch (e: Exception){
+                            "Sorry, Try Again Later"
+                        }
+                    } ?: "Can't Connect to Server"
+                    Result.failure(Exception(errorMsg))
                 }
             } catch (e: HttpException) {
-                Result.failure(Exception("Network error: ${e.message}"))
+                Result.failure(Exception("Network error"))
             } catch (e: Exception) {
-                Result.failure(Exception("An error occurred: ${e.message}"))
+                Result.failure(Exception("Can't connect to server"))
             }
         }
     }
@@ -65,10 +66,19 @@ class HomeRepository @Inject constructor(
             if (response.isSuccessful && response.body() != null) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception(response.errorBody()?.string() ?: "Unknown error"))
+                val errorMsg = response.errorBody()?.string()?.let {
+                    try {
+                        JSONObject(it).getString("message")
+                    }catch (e: Exception){
+                        "Sorry, Try Again Later"
+                    }
+                } ?: "Can't Connect to Server"
+                Result.failure(Exception(errorMsg))
             }
+        } catch (e: HttpException) {
+            Result.failure(Exception("Network error"))
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Exception("Can't connect to server"))
         }
     }
 
