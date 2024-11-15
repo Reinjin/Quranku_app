@@ -292,7 +292,7 @@ fun RegisterScreen(navController: NavController = rememberNavController(), viewM
             // Menampilkan Toast dan Navigasi ke Login saat registrasi berhasil
             LaunchedEffect(registerResponse) {
                 registerResponse?.let { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     if (message.contains("successfully", ignoreCase = true)) {
                         navController.navigate("login") {
                             popUpTo("register") { inclusive = true }

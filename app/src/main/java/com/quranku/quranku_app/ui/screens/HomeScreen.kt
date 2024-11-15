@@ -85,7 +85,7 @@ fun HomeScreen(
             homeViewModel.loadPrayerTimes()
             delay(2000)
             if (errorMessageTimes != null) {
-                Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_SHORT).show()
                 homeViewModel.reseterrorMessageTimes()
             }
         }
@@ -96,7 +96,7 @@ fun HomeScreen(
         homeViewModel.fetchUserName()
         delay(2000)
         if (errorMessageUser != null) {
-            Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()
             homeViewModel.reseterrorMessageUser()
         }
     }
@@ -226,10 +226,10 @@ fun HomeScreen(
                                         coroutineScope.launch{
                                             delay(2000)
                                             if (errorMessageTimes != null) {
-                                                Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_LONG).show()
+                                                Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_SHORT).show()
                                                 homeViewModel.reseterrorMessageTimes()
                                             }else if (errorMessageUser != null) {
-                                                Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_LONG).show()
+                                                Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()
                                                 homeViewModel.reseterrorMessageUser()
                                             }
                                         }
