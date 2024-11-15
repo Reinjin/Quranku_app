@@ -14,7 +14,5 @@ class AuthViewModel @Inject constructor(
         return preferencesManager.isLoggedIn()
     }
 
-    fun logout() {
-        preferencesManager.clearToken()
-    }
+
 }

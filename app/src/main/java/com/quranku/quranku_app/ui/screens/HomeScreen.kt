@@ -38,6 +38,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.shouldShowRationale
 import com.quranku.quranku_app.ui.util.Rotate_left
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -107,14 +108,14 @@ fun HomeScreen(
             containerColor = Color.White,
             textContentColor = Color.Black,
             onDismissRequest = { showRationaleDialog = false },
-            title = { Text("Izin Lokasi Diperlukan") },
+            title = { Text(stringResource(R.string.title_alert_dialog)) },
             text = {Text(
                 text = buildAnnotatedString {
-                    append("Untuk menggunakan fitur Waktu Sholat, izinkan akses ")
+                    append(stringResource(R.string.alert_dialog))
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("Lokasi Presisi")
+                        append(stringResource(R.string.alert_dialog1))
                     }
-                    append(" di pengaturan aplikasi secara manual.")
+                    append(stringResource(R.string.alert_dialog2))
                 }
             )},
             confirmButton = {
