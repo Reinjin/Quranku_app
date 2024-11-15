@@ -4,8 +4,8 @@ import com.quranku.quranku_app.data.PreferencesManager
 import com.quranku.quranku_app.data.api.ApiService
 import com.quranku.quranku_app.data.models.PrayerTimesRequest
 import com.quranku.quranku_app.data.models.PrayerTimesResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
@@ -20,65 +20,75 @@ class HomeRepository @Inject constructor(
     private val locationRepository: LocationRepository
 ) {
 
-    suspend fun fetchUserName(): Result<String> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val token = preferencesManager.getToken() // Mendapatkan token dari PreferencesManager
-                val response = apiService.getProfile("Bearer $token")
-
-                if (response.isSuccessful) {
-                    val fullName = response.body()?.full_name ?: ""
-                    Result.success(fullName)
-                } else {
-                    val errorMsg = response.errorBody()?.string()?.let {
-                        try {
-                            JSONObject(it).getString("message")
-                        }catch (e: Exception){
-                            "Sorry, Try Again Later"
-                        }
-                    } ?: "Can't Connect to Server"
-                    Result.failure(Exception(errorMsg))
-                }
-            } catch (e: HttpException) {
-                Result.failure(Exception("Network error"))
-            } catch (e: Exception) {
-                Result.failure(Exception("Can't connect to server"))
+    fun fetchUserName(): Flow<Result<String>> = flow {
+        try {
+            // Mendapatkan token dari PreferencesManager
+            val token = preferencesManager.getToken()
+            if (token == null) {
+                emit(Result.failure(Exception("Token not found")))
+                return@flow
             }
-        }
-    }
 
-    suspend fun getPrayerTimes(): Result<PrayerTimesResponse> {
-        // Retrieve the JWT token from PreferencesManager
-        val token = preferencesManager.getToken() ?: return Result.failure(Exception("Token not found"))
-
-        // Fetch location from LocationRepository
-        val locationResult = locationRepository.getCurrentLocation()
-        if (locationResult.isFailure) {
-            return Result.failure(locationResult.exceptionOrNull() ?: Exception("Unknown location error"))
-        }
-
-        val (latitude, longitude) = locationResult.getOrNull()!!
-        val request = PrayerTimesRequest(latitude, longitude, getCurrentDate())
-
-        // Make the API call with token and request body
-        return try {
-            val response: Response<PrayerTimesResponse> = apiService.getPrayerTimes("Bearer $token", request)
-            if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
+            // Memanggil API untuk mendapatkan profil
+            val response = apiService.getProfile("Bearer $token")
+            if (response.isSuccessful) {
+                val fullName = response.body()?.full_name ?: ""
+                emit(Result.success(fullName)) // Emit hasil sukses
             } else {
                 val errorMsg = response.errorBody()?.string()?.let {
                     try {
                         JSONObject(it).getString("message")
-                    }catch (e: Exception){
+                    } catch (e: Exception) {
                         "Sorry, Try Again Later"
                     }
                 } ?: "Can't Connect to Server"
-                Result.failure(Exception(errorMsg))
+                emit(Result.failure(Exception(errorMsg))) // Emit hasil gagal
             }
         } catch (e: HttpException) {
-            Result.failure(Exception("Network error"))
+            emit(Result.failure(Exception("Network error"))) // Emit kegagalan jaringan
         } catch (e: Exception) {
-            Result.failure(Exception("Can't connect to server"))
+            emit(Result.failure(Exception("Can't connect to server"))) // Emit kegagalan umum
+        }
+    }
+
+
+    fun getPrayerTimes(): Flow<Result<PrayerTimesResponse>> = flow {
+        try {
+            // Retrieve the JWT token from PreferencesManager
+            val token = preferencesManager.getToken()
+            if (token == null) {
+                emit(Result.failure(Exception("Token not found")))
+                return@flow
+            }
+
+            // Fetch location from LocationRepository
+            val locationResult = locationRepository.getCurrentLocation()
+            if (locationResult.isFailure) {
+                emit(Result.failure(locationResult.exceptionOrNull() ?: Exception("Unknown location error")))
+                return@flow
+            }
+
+            val (latitude, longitude) = locationResult.getOrNull()!!
+            val request = PrayerTimesRequest(latitude, longitude, getCurrentDate())
+
+            // Make the API call with token and request body
+            val response: Response<PrayerTimesResponse> = apiService.getPrayerTimes("Bearer $token", request)
+            if (response.isSuccessful && response.body() != null) {
+                emit(Result.success(response.body()!!))
+            } else {
+                val errorMsg = response.errorBody()?.string()?.let {
+                    try {
+                        JSONObject(it).getString("message")
+                    } catch (e: Exception) {
+                        "Sorry, Try Again Later"
+                    }
+                } ?: "Can't Connect to Server"
+                emit(Result.failure(Exception(errorMsg)))
+            }
+        } catch (e: HttpException) {
+            emit(Result.failure(Exception("Network error")))
+        } catch (e: Exception) {
+            emit(Result.failure(Exception("Can't connect to server")))
         }
     }
 

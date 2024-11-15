@@ -47,45 +47,43 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             while (true) {
-                val newTime = getCurrentTime()
-                _currentTime.value = newTime
+                _currentTime.value = getCurrentTime()
 
-                // Check if the date has changed
                 val newDate = getCurrentDate()
                 if (newDate != _currentDate.value) {
                     _currentDate.value = newDate
                     loadPrayerTimes()
-
                 }
 
-                delay(1000L) // Delay 1 detik
+                delay(1000L)
             }
         }
     }
 
     fun fetchUserName() {
         viewModelScope.launch {
-            val result = homeRepository.fetchUserName()
-            result.onSuccess { name ->
-                _userName.value = name
-            }.onFailure { error ->
-                _errorMessageUser.value = error.message
-                delay(5000)
-                reseterrorMessageUser()
+            homeRepository.fetchUserName().collect { result ->
+                result.onSuccess { name ->
+                    _userName.value = name
+                }.onFailure { error ->
+                    _errorMessageUser.value = error.message
+                    delay(5000) // Wait 5 seconds before resetting error
+                    reseterrorMessageUser()
+                }
             }
         }
     }
 
     fun loadPrayerTimes() {
         viewModelScope.launch {
-            val result = homeRepository.getPrayerTimes()
-
-            if (result.isSuccess) {
-                _prayerTimes.value = result.getOrNull()
-            } else {
-                _errorMessageTimes.value = result.exceptionOrNull()?.message
-                delay(5000)
-                reseterrorMessageTimes()
+            homeRepository.getPrayerTimes().collect { result ->
+                result.onSuccess { prayerTimes ->
+                    _prayerTimes.value = prayerTimes
+                }.onFailure { error ->
+                    _errorMessageTimes.value = error.message
+                    delay(5000) // Wait 5 seconds before resetting error
+                    reseterrorMessageTimes()
+                }
             }
         }
     }

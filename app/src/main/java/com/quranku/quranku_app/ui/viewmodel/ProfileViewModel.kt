@@ -1,5 +1,6 @@
 package com.quranku.quranku_app.ui.viewmodel
 
+import androidx.lifecycle.ViewModel
 import com.quranku.quranku_app.data.PreferencesManager
 import com.quranku.quranku_app.data.repositorys.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +13,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val profileRepository: ProfileRepository
-) {
+) : ViewModel() {
 
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> = _loadingState

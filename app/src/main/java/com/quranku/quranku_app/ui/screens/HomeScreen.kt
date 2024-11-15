@@ -147,7 +147,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White) // Warna background putih di sekelilingnya
-                .padding(16.dp) // Padding luar untuk Box agar ada ruang putih di sekeliling
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp ) // Padding luar untuk Box agar ada ruang putih di sekeliling
         ) {
             Column(
                 modifier = Modifier
@@ -161,7 +161,7 @@ fun HomeScreen(
                     painter = painterResource(id = R.drawable.nama_logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-                        .padding(bottom = 20.dp, top = 8.dp, start = 8.dp)
+                        .padding(bottom = 20.dp, top = 24.dp, start = 8.dp)
                 )
                 Text(
                     text = "   Assalamu'alaikum",
