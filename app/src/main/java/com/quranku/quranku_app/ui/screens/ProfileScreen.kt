@@ -20,11 +20,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.quranku.quranku_app.ui.navigation.BottomNavBar2
 import com.quranku.quranku_app.ui.util.UserCircle
 
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navController: NavController = rememberNavController()
+) {
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier

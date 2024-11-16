@@ -82,7 +82,9 @@ fun HomeScreen(
         } else if (locationPermissionState.status.isGranted) {
             showRationaleDialog = false
             // Setelah izin diberikan, panggil loadPrayerTimes
-            homeViewModel.loadPrayerTimes()
+            if (prayerTimes == null) {
+                homeViewModel.loadPrayerTimes()
+            }
             delay(2000)
             if (errorMessageTimes != null) {
                 Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_SHORT).show()
@@ -93,7 +95,9 @@ fun HomeScreen(
 
     // Menjalankan pengambilan nama pengguna
     LaunchedEffect(Unit) {
-        homeViewModel.fetchUserName()
+        if (userName == null) {
+            homeViewModel.fetchUserName()
+        }
         delay(2000)
         if (errorMessageUser != null) {
             Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()

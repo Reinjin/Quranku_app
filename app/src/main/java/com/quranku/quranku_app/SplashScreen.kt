@@ -19,7 +19,7 @@ fun SplashScreen(navController: NavController, authViewModel: AuthViewModel) {
 
         // Cek status login dan arahkan ke layar yang sesuai
         if (authViewModel.isLoggedIn()) {
-            navController.navigate("home") {
+            navController.navigate("main") {
                 popUpTo("splash") { inclusive = true }
             }
         } else {

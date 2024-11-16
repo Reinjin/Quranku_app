@@ -207,7 +207,7 @@ fun LoginScreen(navController: NavController = rememberNavController(), viewMode
                 loginResponse?.let { message ->
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     if (message == "Login Successfully") {
-                        navController.navigate("home") {
+                        navController.navigate("main") {
                             popUpTo("welcome") {inclusive = true}
                         }
                     }
