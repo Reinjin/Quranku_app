@@ -15,7 +15,7 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavController, authViewModel: AuthViewModel) {
     // Menggunakan LaunchedEffect untuk menjalankan logika hanya sekali saat SplashScreen dibuka
     LaunchedEffect(Unit) {
-        delay(1000) // Menunggu selama 2 detik (bisa disesuaikan sesuai kebutuhan)
+        delay(1000) // Menunggu selama 1 detik (bisa disesuaikan sesuai kebutuhan)
 
         // Cek status login dan arahkan ke layar yang sesuai
         if (authViewModel.isLoggedIn()) {

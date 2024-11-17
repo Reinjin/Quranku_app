@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -22,25 +23,25 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _hurufHijaiyahLists = MutableStateFlow<List<HurufHijaiyah>>(emptyList())
-    val hurufHijaiyahLists: StateFlow<List<HurufHijaiyah>> = _hurufHijaiyahLists
+    val hurufHijaiyahLists: StateFlow<List<HurufHijaiyah>> = _hurufHijaiyahLists.asStateFlow()
 
     private val _currentTime = MutableStateFlow(getCurrentTime())
-    val currentTime: StateFlow<String> = _currentTime
+    val currentTime: StateFlow<String> = _currentTime.asStateFlow()
 
     private val _currentDate = MutableStateFlow(getCurrentDate())
-    val currentDate: StateFlow<String> = _currentDate
+    val currentDate: StateFlow<String> = _currentDate.asStateFlow()
 
     private val _userName = MutableStateFlow<String?>(null)
-    val userName: StateFlow<String?> = _userName
+    val userName: StateFlow<String?> = _userName.asStateFlow()
 
     private val _errorMessageUser = MutableStateFlow<String?>(null)
-    val errorMessageUser: StateFlow<String?> = _errorMessageUser
+    val errorMessageUser: StateFlow<String?> = _errorMessageUser.asStateFlow()
 
     private val _prayerTimes = MutableStateFlow<PrayerTimesResponse?>(null)
-    val prayerTimes: StateFlow<PrayerTimesResponse?> = _prayerTimes
+    val prayerTimes: StateFlow<PrayerTimesResponse?> = _prayerTimes.asStateFlow()
 
     private val _errorMessageTimes = MutableStateFlow<String?>(null)
-    val errorMessageTimes: StateFlow<String?> = _errorMessageTimes
+    val errorMessageTimes: StateFlow<String?> = _errorMessageTimes.asStateFlow()
 
     init {
         _hurufHijaiyahLists.value = hurufHijaiyahList

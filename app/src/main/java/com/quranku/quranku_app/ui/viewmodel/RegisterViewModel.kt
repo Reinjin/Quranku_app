@@ -6,6 +6,7 @@ import com.quranku.quranku_app.data.repositorys.RegisterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,11 +17,11 @@ class RegisterViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _registerResponse = MutableStateFlow<String?>(null)
-    val registerResponse: StateFlow<String?> = _registerResponse
+    val registerResponse: StateFlow<String?> = _registerResponse.asStateFlow()
 
     // Tambahkan loadingState
     private val _loadingState = MutableStateFlow(false)
-    val loadingState: StateFlow<Boolean> = _loadingState
+    val loadingState: StateFlow<Boolean> = _loadingState.asStateFlow()
 
     fun registerUser(fullName: String, email: String, password: String) {
         viewModelScope.launch {

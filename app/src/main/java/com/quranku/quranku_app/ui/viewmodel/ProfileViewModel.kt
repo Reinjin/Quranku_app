@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,22 +18,22 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _loadingState = MutableStateFlow(false)
-    val loadingState: StateFlow<Boolean> = _loadingState
+    val loadingState: StateFlow<Boolean> = _loadingState.asStateFlow()
 
     private val _userName = MutableStateFlow<String?>(null)
-    val userName: StateFlow<String?> = _userName
+    val userName: StateFlow<String?> = _userName.asStateFlow()
 
     private val _email = MutableStateFlow<String?>(null)
-    val email: StateFlow<String?> = _email
+    val email: StateFlow<String?> = _email.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     private val _errorMessageLogout = MutableStateFlow<String?>(null)
-    val errorMessageLogout : StateFlow<String?> = _errorMessageLogout
+    val errorMessageLogout : StateFlow<String?> = _errorMessageLogout.asStateFlow()
 
     private val _logoutState = MutableStateFlow<String?>(null)
-    val logoutState: StateFlow<String?> = _logoutState
+    val logoutState: StateFlow<String?> = _logoutState.asStateFlow()
 
     fun fetchUserProfile() {
         viewModelScope.launch {
