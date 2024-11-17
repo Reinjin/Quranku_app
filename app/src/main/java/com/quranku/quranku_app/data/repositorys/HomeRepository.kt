@@ -4,8 +4,10 @@ import com.quranku.quranku_app.data.PreferencesManager
 import com.quranku.quranku_app.data.api.ApiService
 import com.quranku.quranku_app.data.models.PrayerTimesRequest
 import com.quranku.quranku_app.data.models.PrayerTimesResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
@@ -49,7 +51,7 @@ class HomeRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Result.failure(Exception("Can't connect to server"))) // Emit kegagalan umum
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
 
     fun getPrayerTimes(): Flow<Result<PrayerTimesResponse>> = flow {
@@ -90,7 +92,7 @@ class HomeRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Result.failure(Exception("Can't connect to server")))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     private fun getCurrentDate(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

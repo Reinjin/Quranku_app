@@ -1,30 +1,76 @@
 package com.quranku.quranku_app.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.quranku.quranku_app.R
 import com.quranku.quranku_app.ui.util.UserCircle
+import com.quranku.quranku_app.ui.viewmodel.ProfileViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun ProfileScreen(
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
+
+    val userName by profileViewModel.userName.collectAsState()
+    val email by profileViewModel.email.collectAsState()
+    val errorMessageUser by profileViewModel.errorMessage.collectAsState()
+
+    val loadingState by profileViewModel.loadingState.collectAsState()
+    val logoutState by profileViewModel.logoutState.collectAsState()
+    val errorMessageLogout by profileViewModel.errorMessageLogout.collectAsState()
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope() // Membuat CoroutineScope
+
+    // Menjalankan pengambilan nama pengguna
+    LaunchedEffect(Unit) {
+        if (userName == null) {
+            profileViewModel.fetchUserProfile()
+        }
+        delay(2000)
+        if (errorMessageUser != null) {
+            Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()
+            profileViewModel.resetErrorMessage()
+        }
+    }
+
+    LaunchedEffect(logoutState) {
+        logoutState?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            if (message == "Successfully logged out") {
+                navController.navigate("welcome") {
+                    popUpTo("main") {inclusive = true}
+                }
+            }
+        }
+    }
+
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -64,7 +110,7 @@ fun ProfileScreen(
 
             // User Name
             Text(
-                text = "Hello Itunuoluwa",
+                text = userName ?: "-----",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(id = R.color.black)
@@ -74,7 +120,7 @@ fun ProfileScreen(
 
             // User Email
             Text(
-                text = "Itunuoluwa7749@gmail.com",
+                text = email ?: "-------",
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.black),
                 textAlign = TextAlign.Center
@@ -90,7 +136,26 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             ProfileButton(text = "Logout") {
-                // Handle Logout button click
+                profileViewModel.logout()
+                coroutineScope.launch{
+                    delay(2000)
+                    if (errorMessageLogout != null) {
+                        Toast.makeText(context, "Can't Logout: $errorMessageLogout", Toast.LENGTH_SHORT).show()
+                        profileViewModel.resetErrorMessageLogout()
+                    }
+                }
+            }
+        }
+        if (loadingState) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x80000000)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = colorResource(id = R.color.blue_dark_light)
+                )
             }
         }
     }

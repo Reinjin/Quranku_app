@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.flow
 import org.json.JSONObject
 import javax.inject.Inject
 import com.quranku.quranku_app.data.models.LoginRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 
 class LoginRepository @Inject constructor(
     private val apiService: ApiService
@@ -29,5 +31,5 @@ class LoginRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Result.failure(Exception("Can't connect to server")))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

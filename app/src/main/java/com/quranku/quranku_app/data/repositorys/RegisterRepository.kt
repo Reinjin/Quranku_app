@@ -2,8 +2,10 @@ package com.quranku.quranku_app.data.repositorys
 
 import com.quranku.quranku_app.data.api.ApiService
 import com.quranku.quranku_app.data.models.RegisterRequest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -29,5 +31,5 @@ class RegisterRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Result.failure(Exception("Can't connect to server")))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

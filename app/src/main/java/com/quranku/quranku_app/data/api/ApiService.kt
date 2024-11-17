@@ -2,6 +2,7 @@ package com.quranku.quranku_app.data.api
 
 import com.quranku.quranku_app.data.models.LoginRequest
 import com.quranku.quranku_app.data.models.LoginResponse
+import com.quranku.quranku_app.data.models.LogoutResponse
 import com.quranku.quranku_app.data.models.PrayerTimesRequest
 import com.quranku.quranku_app.data.models.PrayerTimesResponse
 import com.quranku.quranku_app.data.models.ProfileResponse
@@ -32,4 +33,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body data: PrayerTimesRequest
     ): Response<PrayerTimesResponse>
+
+    @POST("/auth/logout")
+    suspend fun logout(
+        @Header("Authorization") token: String
+    ): Response<LogoutResponse>
+
 }

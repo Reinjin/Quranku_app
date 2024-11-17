@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
-    navController: NavController,
+    navControllerUtama : NavController,
     homeViewModel : HomeViewModel = hiltViewModel()
 ) {
     val hurufHijaiyahList by homeViewModel.hurufHijaiyahLists.collectAsState()
@@ -354,7 +354,7 @@ fun HijaiyahButton(huruf: HurufHijaiyah) {
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        navController = rememberNavController()
+        navControllerUtama = rememberNavController()
     )
 }
 

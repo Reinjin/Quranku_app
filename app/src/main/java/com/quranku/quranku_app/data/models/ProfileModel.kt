@@ -4,3 +4,7 @@ data class ProfileResponse(
     val full_name: String,
     val email: String
 )
+
+data class LogoutResponse(
+    val msg: String
+)
