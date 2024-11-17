@@ -116,7 +116,7 @@ fun AboutScreen() {
                     AboutItem(
                         icon = Frame_source, // Ikon untuk Source
                         title = "Source",
-                        content = "github.com/Reinjin/Aplikasi_Quranku"
+                        content = "github.com/Reinjin/Quranku_app"
                     )
                 }
             }
