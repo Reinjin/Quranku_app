@@ -79,7 +79,7 @@ fun AnimatableIcon(
         targetValue = scale,
         // Here the animation spec serves no purpose but to demonstrate in slow speed.
         animationSpec = TweenSpec(
-            durationMillis = 300,
+            durationMillis = 100,
             easing = FastOutSlowInEasing
         )
     )
@@ -87,7 +87,7 @@ fun AnimatableIcon(
     val animatedColor by animateColorAsState(
         targetValue = color,
         animationSpec = TweenSpec(
-            durationMillis = 300,
+            durationMillis = 100,
             easing = FastOutSlowInEasing
         )
     )
@@ -96,7 +96,7 @@ fun AnimatableIcon(
     val animatedIconButtonSize: Dp by animateDpAsState(
         targetValue = iconSize.times(scale),
         animationSpec = TweenSpec(
-            durationMillis = 300,
+            durationMillis = 100,
             easing = FastOutSlowInEasing
         )
     )

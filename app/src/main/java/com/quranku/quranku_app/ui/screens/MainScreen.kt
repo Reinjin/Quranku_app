@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,7 +31,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(
-    viewModel : MainViewModel = hiltViewModel()
+    viewModel : MainViewModel = hiltViewModel(),
+    navControllerUtama: NavController
 ) {
     val navController = rememberNavController()
 
@@ -87,7 +89,7 @@ fun MainScreen(
                     composable("home") { HomeScreen(navController) }
                     composable("history") { HistoryScreen(navController) }
                     composable("quran") { QuranScreen(navController) }
-                    composable("profile") { ProfileScreen(navController) }
+                    composable("profile") { ProfileScreen(navControllerUtama) }
                 }
             }
         }

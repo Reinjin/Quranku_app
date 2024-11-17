@@ -462,4 +462,160 @@ public val UserCircle: ImageVector
 private var _UserCircle: ImageVector? = null
 
 
+public val Headphones: ImageVector
+    get() {
+        if (_Headphones != null) {
+            return _Headphones!!
+        }
+        _Headphones = ImageVector.Builder(
+            name = "Headphones",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 960f,
+            viewportHeight = 960f
+        ).apply {
+            path(
+                fill = SolidColor(Color.Black),
+                fillAlpha = 1.0f,
+                stroke = null,
+                strokeAlpha = 1.0f,
+                strokeLineWidth = 1.0f,
+                strokeLineCap = StrokeCap.Butt,
+                strokeLineJoin = StrokeJoin.Miter,
+                strokeLineMiter = 1.0f,
+                pathFillType = PathFillType.NonZero
+            ) {
+                moveTo(360f, 840f)
+                horizontalLineTo(200f)
+                quadToRelative(-33f, 0f, -56.5f, -23.5f)
+                reflectiveQuadTo(120f, 760f)
+                verticalLineToRelative(-280f)
+                quadToRelative(0f, -75f, 28.5f, -140.5f)
+                reflectiveQuadToRelative(77f, -114f)
+                reflectiveQuadToRelative(114f, -77f)
+                reflectiveQuadTo(480f, 120f)
+                reflectiveQuadToRelative(140.5f, 28.5f)
+                reflectiveQuadToRelative(114f, 77f)
+                reflectiveQuadToRelative(77f, 114f)
+                reflectiveQuadTo(840f, 480f)
+                verticalLineToRelative(280f)
+                quadToRelative(0f, 33f, -23.5f, 56.5f)
+                reflectiveQuadTo(760f, 840f)
+                horizontalLineTo(600f)
+                verticalLineToRelative(-320f)
+                horizontalLineToRelative(160f)
+                verticalLineToRelative(-40f)
+                quadToRelative(0f, -117f, -81.5f, -198.5f)
+                reflectiveQuadTo(480f, 200f)
+                reflectiveQuadToRelative(-198.5f, 81.5f)
+                reflectiveQuadTo(200f, 480f)
+                verticalLineToRelative(40f)
+                horizontalLineToRelative(160f)
+                close()
+                moveToRelative(-80f, -240f)
+                horizontalLineToRelative(-80f)
+                verticalLineToRelative(160f)
+                horizontalLineToRelative(80f)
+                close()
+                moveToRelative(400f, 0f)
+                verticalLineToRelative(160f)
+                horizontalLineToRelative(80f)
+                verticalLineToRelative(-160f)
+                close()
+                moveToRelative(-400f, 0f)
+                horizontalLineToRelative(-80f)
+                close()
+                moveToRelative(400f, 0f)
+                horizontalLineToRelative(80f)
+                close()
+            }
+        }.build()
+        return _Headphones!!
+    }
+
+private var _Headphones: ImageVector? = null
+
+
+
+public val Frame_source: ImageVector
+    get() {
+        if (_Frame_source != null) {
+            return _Frame_source!!
+        }
+        _Frame_source = ImageVector.Builder(
+            name = "Frame_source",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 960f,
+            viewportHeight = 960f
+        ).apply {
+            path(
+                fill = SolidColor(Color.Black),
+                fillAlpha = 1.0f,
+                stroke = null,
+                strokeAlpha = 1.0f,
+                strokeLineWidth = 1.0f,
+                strokeLineCap = StrokeCap.Butt,
+                strokeLineJoin = StrokeJoin.Miter,
+                strokeLineMiter = 1.0f,
+                pathFillType = PathFillType.NonZero
+            ) {
+                moveTo(344f, 624f)
+                lineTo(200f, 480f)
+                lineToRelative(144f, -144f)
+                lineToRelative(56f, 57f)
+                lineToRelative(-87f, 87f)
+                lineToRelative(87f, 87f)
+                close()
+                moveToRelative(272f, 0f)
+                lineToRelative(-56f, -57f)
+                lineToRelative(87f, -87f)
+                lineToRelative(-87f, -87f)
+                lineToRelative(56f, -57f)
+                lineToRelative(144f, 144f)
+                close()
+                moveTo(200f, 840f)
+                quadToRelative(-33f, 0f, -56.5f, -23.5f)
+                reflectiveQuadTo(120f, 760f)
+                verticalLineToRelative(-160f)
+                horizontalLineToRelative(80f)
+                verticalLineToRelative(160f)
+                horizontalLineToRelative(160f)
+                verticalLineToRelative(80f)
+                close()
+                moveToRelative(400f, 0f)
+                verticalLineToRelative(-80f)
+                horizontalLineToRelative(160f)
+                verticalLineToRelative(-160f)
+                horizontalLineToRelative(80f)
+                verticalLineToRelative(160f)
+                quadToRelative(0f, 33f, -23.5f, 56.5f)
+                reflectiveQuadTo(760f, 840f)
+                close()
+                moveTo(120f, 360f)
+                verticalLineToRelative(-160f)
+                quadToRelative(0f, -33f, 23.5f, -56.5f)
+                reflectiveQuadTo(200f, 120f)
+                horizontalLineToRelative(160f)
+                verticalLineToRelative(80f)
+                horizontalLineTo(200f)
+                verticalLineToRelative(160f)
+                close()
+                moveToRelative(640f, 0f)
+                verticalLineToRelative(-160f)
+                horizontalLineTo(600f)
+                verticalLineToRelative(-80f)
+                horizontalLineToRelative(160f)
+                quadToRelative(33f, 0f, 56.5f, 23.5f)
+                reflectiveQuadTo(840f, 200f)
+                verticalLineToRelative(160f)
+                close()
+            }
+        }.build()
+        return _Frame_source!!
+    }
+
+private var _Frame_source: ImageVector? = null
+
+
 

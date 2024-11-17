@@ -83,6 +83,9 @@ dependencies {
     //Compose Accompanist Permission
     implementation(libs.accompanist.permissions)
 
+    //google font
+    implementation(libs.androidx.ui.text.google.fonts)
+
 }
 
 kapt {

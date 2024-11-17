@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.quranku.quranku_app.SplashScreen
+import com.quranku.quranku_app.ui.screens.AboutScreen
 import com.quranku.quranku_app.ui.screens.HistoryScreen
 import com.quranku.quranku_app.ui.screens.HomeScreen
 import com.quranku.quranku_app.ui.screens.LoginScreen
@@ -28,8 +29,8 @@ fun AppNavigation(authViewModel: AuthViewModel) {
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
 
-        composable("main") { MainScreen() }
+        composable("main") { MainScreen(navControllerUtama = navController) }
 
-
+        composable("about") { AboutScreen() }
     }
 }
