@@ -166,11 +166,12 @@ fun BottomNavBar2(
                         // Navigasi hanya jika rute saat ini berbeda
                         if (route != currentRoute) {
                             navController.navigate(route) {
-                                // Hindari tumpukan rute yang tidak perlu
-                                popUpTo(navController.graph.startDestinationId) {
-                                    inclusive = false
+                                popUpTo("home") { // Atur popUpTo ke "home"
+                                    inclusive = false // Jangan hapus "home" dari stack
+                                    saveState = true // Simpan state saat berpindah
                                 }
-                                launchSingleTop = true // Mencegah instance ganda
+                                restoreState = true // Pulihkan state saat kembali ke "home"
+                                launchSingleTop = true // Hindari instance ganda
                             }
                         }
                     }
@@ -188,9 +189,11 @@ fun BottomNavBar2(
                             // Navigasi hanya jika rute saat ini berbeda
                             if (route != currentRoute) {
                                 navController.navigate(route) {
-                                    popUpTo(navController.graph.startDestinationId) {
+                                    popUpTo("home") {
                                         inclusive = false
+                                        saveState = true
                                     }
+                                    restoreState = true
                                     launchSingleTop = true
                                 }
                             }

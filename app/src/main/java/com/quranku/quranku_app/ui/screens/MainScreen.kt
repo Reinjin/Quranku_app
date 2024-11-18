@@ -1,5 +1,6 @@
 package com.quranku.quranku_app.ui.screens
 
+import HistoryScreen
 import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

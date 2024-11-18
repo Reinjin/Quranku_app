@@ -1,5 +1,6 @@
 package com.quranku.quranku_app.data.api
 
+import com.quranku.quranku_app.data.models.HistoryResponse
 import com.quranku.quranku_app.data.models.LoginRequest
 import com.quranku.quranku_app.data.models.LoginResponse
 import com.quranku.quranku_app.data.models.LogoutResponse
@@ -13,6 +14,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("auth/register")
@@ -38,5 +40,12 @@ interface ApiService {
     suspend fun logout(
         @Header("Authorization") token: String
     ): Response<LogoutResponse>
+
+    @GET("ml/history_belajar")
+    suspend fun getHistoryBelajar(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Response<HistoryResponse>
 
 }
