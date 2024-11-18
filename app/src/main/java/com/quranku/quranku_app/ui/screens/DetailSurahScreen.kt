@@ -233,7 +233,8 @@ fun VerseItem(
             Text(
                 text = verseTranslation,
                 fontSize = 14.sp,
-                color = colorResource(id = R.color.blue_dark)
+                color = colorResource(id = R.color.blue_dark),
+                textAlign = TextAlign.Justify
             )
         }
     }

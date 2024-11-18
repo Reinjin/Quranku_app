@@ -123,16 +123,18 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
                     Text(
                         text = errorState ?: "Terjadi kesalahan",
                         color = Color.Red,
-                        modifier = Modifier.fillMaxSize(),
-                        textAlign = TextAlign.Center
+                        modifier = Modifier.fillMaxSize().padding(top = 10.dp),
+                        textAlign = TextAlign.Center,
+                        fontSize = 24.sp
                     )
                 }
                 historyItems.isEmpty() -> {
                     Text(
                         text = "Silahkan Lakukan Pembelajaran Huruf Hijaiyah Dahulu",
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(top = 10.dp),
                         color = Color.DarkGray,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 24.sp
                     )
                 }
                 else -> {
