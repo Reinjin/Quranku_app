@@ -5,6 +5,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,7 +43,7 @@ import com.quranku.quranku_app.ui.viewmodel.HistoryViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
     val historyItems by historyViewModel.historyState.collectAsState()
@@ -48,6 +52,12 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
     val errorState by historyViewModel.errorState.collectAsState()
 
     val listState = rememberLazyListState()
+
+    // Pull-to-refresh state
+    val refreshState = rememberPullRefreshState(
+        refreshing = isLoading,
+        onRefresh = { historyViewModel.fetchHistory(isFirstLoad = true) }
+    )
 
     LaunchedEffect(Unit) {
         if (historyItems.isEmpty()) {
@@ -90,6 +100,7 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
                 .padding(innerPadding)
                 .padding(bottom = 20.dp)
                 .background(Color.White)
+                .pullRefresh(refreshState) // Add pullRefresh here
         ) {
             when {
                 isLoading && historyItems.isEmpty() -> {
@@ -158,6 +169,14 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
                     }
                 }
             }
+
+            // Pull-to-refresh indicator
+            PullRefreshIndicator(
+                refreshing = isLoading,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = colorResource(id = R.color.blue_dark_light)
+            )
         }
     }
 }

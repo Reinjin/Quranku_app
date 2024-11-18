@@ -89,6 +89,9 @@ dependencies {
     //Gson untuk parsing JSON
     implementation(libs.gson)
 
+    implementation(libs.androidx.material)
+
+
 }
 
 kapt {
