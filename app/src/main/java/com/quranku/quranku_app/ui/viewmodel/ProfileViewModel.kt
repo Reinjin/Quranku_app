@@ -56,13 +56,14 @@ class ProfileViewModel @Inject constructor(
             profileRepository.logout().collect { result ->
                 result.onSuccess { result ->
                     _logoutState.value = result
+                    _loadingState.value = false
                 }.onFailure { error ->
                     _errorMessageLogout.value = error.message
+                    _loadingState.value = false
                     delay(5000)
                     resetErrorMessageLogout()
                 }
             }
-            _loadingState.value = false
         }
     }
 

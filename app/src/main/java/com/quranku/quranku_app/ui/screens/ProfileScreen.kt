@@ -53,7 +53,7 @@ fun ProfileScreen(
         if (userName == null) {
             profileViewModel.fetchUserProfile()
         }
-        delay(2000)
+        delay(1500)
         if (errorMessageUser != null) {
             Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()
             profileViewModel.resetErrorMessage()
@@ -138,7 +138,7 @@ fun ProfileScreen(
             ProfileButton(text = "Logout") {
                 profileViewModel.logout()
                 coroutineScope.launch{
-                    delay(2000)
+                    delay(1500)
                     if (errorMessageLogout != null) {
                         Toast.makeText(context, "Can't Logout: $errorMessageLogout", Toast.LENGTH_SHORT).show()
                         profileViewModel.resetErrorMessageLogout()
