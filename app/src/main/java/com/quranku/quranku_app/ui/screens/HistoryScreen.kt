@@ -14,14 +14,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.quranku.quranku_app.ui.navigation.BottomNavBar2
+
 
 
 @Composable
 fun HistoryScreen(
-    navController: NavController = rememberNavController()
 ) {
     Scaffold { paddingValues ->
         // Gunakan Box untuk menempatkan konten di dalam Scaffold

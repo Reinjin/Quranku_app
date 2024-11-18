@@ -86,6 +86,9 @@ dependencies {
     //google font
     implementation(libs.androidx.ui.text.google.fonts)
 
+    //Gson untuk parsing JSON
+    implementation(libs.gson)
+
 }
 
 kapt {

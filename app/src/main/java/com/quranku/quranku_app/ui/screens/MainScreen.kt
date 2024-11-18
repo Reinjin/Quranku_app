@@ -86,9 +86,9 @@ fun MainScreen(
                     navController = navController,
                     startDestination = "home"
                 ) {
-                    composable("home") { HomeScreen(navController) }
-                    composable("history") { HistoryScreen(navController) }
-                    composable("quran") { QuranScreen(navController) }
+                    composable("home") { HomeScreen(navControllerUtama) }
+                    composable("history") { HistoryScreen() }
+                    composable("quran") { QuranScreen(navControllerUtama) }
                     composable("profile") { ProfileScreen(navControllerUtama) }
                 }
             }
