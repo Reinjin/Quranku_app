@@ -618,4 +618,113 @@ public val Frame_source: ImageVector
 private var _Frame_source: ImageVector? = null
 
 
+public val Microphone: ImageVector
+    get() {
+        if (_Microphone != null) {
+            return _Microphone!!
+        }
+        _Microphone = ImageVector.Builder(
+            name = "Microphone",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(
+                fill = null,
+                fillAlpha = 1.0f,
+                stroke = SolidColor(Color(0xFF0F172A)),
+                strokeAlpha = 1.0f,
+                strokeLineWidth = 1.5f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round,
+                strokeLineMiter = 1.0f,
+                pathFillType = PathFillType.NonZero
+            ) {
+                moveTo(12f, 18.75f)
+                curveTo(15.3137f, 18.75f, 18f, 16.0637f, 18f, 12.75f)
+                verticalLineTo(11.25f)
+                moveTo(12f, 18.75f)
+                curveTo(8.6863f, 18.75f, 6f, 16.0637f, 6f, 12.75f)
+                verticalLineTo(11.25f)
+                moveTo(12f, 18.75f)
+                verticalLineTo(22.5f)
+                moveTo(8.25f, 22.5f)
+                horizontalLineTo(15.75f)
+                moveTo(12f, 15.75f)
+                curveTo(10.3431f, 15.75f, 9f, 14.4069f, 9f, 12.75f)
+                verticalLineTo(4.5f)
+                curveTo(9f, 2.8432f, 10.3431f, 1.5f, 12f, 1.5f)
+                curveTo(13.6569f, 1.5f, 15f, 2.8432f, 15f, 4.5f)
+                verticalLineTo(12.75f)
+                curveTo(15f, 14.4069f, 13.6569f, 15.75f, 12f, 15.75f)
+                close()
+            }
+        }.build()
+        return _Microphone!!
+    }
 
+private var _Microphone: ImageVector? = null
+
+
+public val Volume_up: ImageVector
+    get() {
+        if (_Volume_up != null) {
+            return _Volume_up!!
+        }
+        _Volume_up = ImageVector.Builder(
+            name = "Volume_up",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 960f,
+            viewportHeight = 960f
+        ).apply {
+            path(
+                fill = SolidColor(Color.Black),
+                fillAlpha = 1.0f,
+                stroke = null,
+                strokeAlpha = 1.0f,
+                strokeLineWidth = 1.0f,
+                strokeLineCap = StrokeCap.Butt,
+                strokeLineJoin = StrokeJoin.Miter,
+                strokeLineMiter = 1.0f,
+                pathFillType = PathFillType.NonZero
+            ) {
+                moveTo(560f, 829f)
+                verticalLineToRelative(-82f)
+                quadToRelative(90f, -26f, 145f, -100f)
+                reflectiveQuadToRelative(55f, -168f)
+                reflectiveQuadToRelative(-55f, -168f)
+                reflectiveQuadToRelative(-145f, -100f)
+                verticalLineToRelative(-82f)
+                quadToRelative(124f, 28f, 202f, 125.5f)
+                reflectiveQuadTo(840f, 479f)
+                reflectiveQuadToRelative(-78f, 224.5f)
+                reflectiveQuadTo(560f, 829f)
+                moveTo(120f, 600f)
+                verticalLineToRelative(-240f)
+                horizontalLineToRelative(160f)
+                lineToRelative(200f, -200f)
+                verticalLineToRelative(640f)
+                lineTo(280f, 600f)
+                close()
+                moveToRelative(440f, 40f)
+                verticalLineToRelative(-322f)
+                quadToRelative(47f, 22f, 73.5f, 66f)
+                reflectiveQuadToRelative(26.5f, 96f)
+                quadToRelative(0f, 51f, -26.5f, 94.5f)
+                reflectiveQuadTo(560f, 640f)
+                moveTo(400f, 354f)
+                lineToRelative(-86f, 86f)
+                horizontalLineTo(200f)
+                verticalLineToRelative(80f)
+                horizontalLineToRelative(114f)
+                lineToRelative(86f, 86f)
+                close()
+                moveTo(300f, 480f)
+            }
+        }.build()
+        return _Volume_up!!
+    }
+
+private var _Volume_up: ImageVector? = null
