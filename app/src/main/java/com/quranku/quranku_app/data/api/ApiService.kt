@@ -6,14 +6,20 @@ import com.quranku.quranku_app.data.models.LoginResponse
 import com.quranku.quranku_app.data.models.LogoutResponse
 import com.quranku.quranku_app.data.models.PrayerTimesRequest
 import com.quranku.quranku_app.data.models.PrayerTimesResponse
+import com.quranku.quranku_app.data.models.PredictResponse
 import com.quranku.quranku_app.data.models.ProfileResponse
 import com.quranku.quranku_app.data.models.RegisterRequest
 import com.quranku.quranku_app.data.models.RegisterResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
 interface ApiService {
@@ -47,5 +53,13 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): Response<HistoryResponse>
+
+    @Multipart
+    @POST("ml/predict_biner")
+    suspend fun predictAudio(
+        @Header("Authorization") token: String,
+        @PartMap requestData: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Part file: MultipartBody.Part
+    ): Response<PredictResponse>
 
 }

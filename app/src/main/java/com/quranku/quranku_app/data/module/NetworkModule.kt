@@ -1,4 +1,4 @@
-package com.quranku.quranku_app.data
+package com.quranku.quranku_app.data.module
 
 import com.quranku.quranku_app.data.api.ApiService
 import dagger.Module

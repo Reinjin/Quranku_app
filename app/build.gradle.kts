@@ -91,6 +91,8 @@ dependencies {
 
     implementation(libs.androidx.material)
 
+    //okhttp
+    implementation(libs.okhttp)
 
 }
 

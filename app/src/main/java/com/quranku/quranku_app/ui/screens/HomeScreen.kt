@@ -33,6 +33,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.shouldShowRationale
@@ -292,7 +293,10 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Hijaiyah Grid
-                HijaiyahGrid(hurufHijaiyahList = hurufHijaiyahList )
+                HijaiyahGrid(
+                    hurufHijaiyahList = hurufHijaiyahList,
+                    navController = navControllerUtama  // Pass navController ke Grid
+                )
             }
         }
     }
@@ -307,7 +311,10 @@ fun PrayerTimeColumn(name: String, time: String) {
 }
 
 @Composable
-fun HijaiyahGrid(hurufHijaiyahList: List<HurufHijaiyah>) {
+fun HijaiyahGrid(
+    hurufHijaiyahList: List<HurufHijaiyah>,
+    navController: NavController
+) {
     Column {
         hurufHijaiyahList.chunked(4).forEach { rowItems ->
             Row(
@@ -316,7 +323,12 @@ fun HijaiyahGrid(hurufHijaiyahList: List<HurufHijaiyah>) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 rowItems.forEach { huruf ->
-                    HijaiyahButton(huruf = huruf)
+                    HijaiyahButton(
+                        huruf = huruf,
+                        onClick = {
+                            navController.navigate("detail_huruf/${huruf.id}")
+                        }
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -325,29 +337,33 @@ fun HijaiyahGrid(hurufHijaiyahList: List<HurufHijaiyah>) {
 }
 
 @Composable
-fun HijaiyahButton(huruf: HurufHijaiyah) {
+fun HijaiyahButton(
+    huruf: HurufHijaiyah,
+    onClick: () -> Unit
+) {
     Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier.clickable(onClick = onClick)
     ) {
-        Button(
-            onClick = { /* Handle click here */ },
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = colorResource(id = R.color.blue_dark)
-            ),
+        Box(
             modifier = Modifier
                 .size(60.dp)
-                .background(Color.White)
+                .background(Color.White),
+            contentAlignment = Alignment.Center
         ) {
-            Text(text = huruf.huruf, fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center )
+            Text(
+                text = huruf.huruf,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.blue_dark),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
+
 
 // Preview function
 @Preview(showBackground = true)

@@ -1,4 +1,4 @@
-package com.quranku.quranku_app.data
+package com.quranku.quranku_app.data.module
 
 import android.content.Context
 import com.google.android.gms.location.FusedLocationProviderClient
