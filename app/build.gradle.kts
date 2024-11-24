@@ -89,6 +89,7 @@ dependencies {
     //Gson untuk parsing JSON
     implementation(libs.gson)
 
+    //untuk pull refresh
     implementation(libs.androidx.material)
 
     //okhttp

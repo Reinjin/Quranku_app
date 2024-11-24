@@ -1,5 +1,6 @@
 package com.quranku.quranku_app.ui.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaPlayer
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailHurufViewModel @Inject constructor(
     private val hijaiyahRepository: HijaiyahRepository,
-    @ApplicationContext private val context: Context // Tambahkan anotasi ApplicationContext
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _selectedHuruf = MutableStateFlow<HurufHijaiyah?>(null)
@@ -33,8 +34,11 @@ class DetailHurufViewModel @Inject constructor(
     private val _recordingResult = MutableStateFlow<Result<String>?>(null)
     val recordingResult: StateFlow<Result<String>?> = _recordingResult.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     private var mediaPlayer: MediaPlayer? = null
-    private val _isPlaying = MutableStateFlow<String?>(null) // Ubah ke String untuk track file yang sedang diputar
+    private val _isPlaying = MutableStateFlow<String?>(null)
     val isPlaying: StateFlow<String?> = _isPlaying.asStateFlow()
 
     fun setHuruf(hurufId: Int) {
@@ -45,60 +49,86 @@ class DetailHurufViewModel @Inject constructor(
         _selectedKondisi.value = kondisi
     }
 
+    private val _showResultSheet = MutableStateFlow(false)
+    val showResultSheet: StateFlow<Boolean> = _showResultSheet.asStateFlow()
+
     fun startRecording() {
+        val huruf = selectedHuruf.value ?: run {
+            _recordingResult.value = Result.failure(Exception("No huruf selected"))
+            return
+        }
+        val kondisi = selectedKondisi.value
+        val hasilPrediksi = huruf.kondisiKelas[kondisi] ?: run {
+            _recordingResult.value = Result.failure(Exception("Invalid kondisi"))
+            return
+        }
+
         viewModelScope.launch {
             try {
-                val huruf = selectedHuruf.value ?: throw Exception("No huruf selected")
-                val kondisi = selectedKondisi.value
-                val hasilPrediksi = huruf.kondisiKelas[kondisi] ?: throw Exception("Invalid kondisi")
-
                 _isRecording.value = true
-                _recordingResult.value = hijaiyahRepository.recordAndPredictAudio(
+                _recordingResult.value = null
+
+                hijaiyahRepository.recordAndPredictAudio(
                     huruf = huruf.huruf,
                     kondisi = kondisi,
                     hasilPrediksi = hasilPrediksi
-                )
+                ).collect { result ->
+                    _recordingResult.value = result
+                    _isRecording.value = false
+                    _isLoading.value = false
+                    _showResultSheet.value = true  // Tampilkan sheet setelah hasil tersedia
+                }
             } catch (e: Exception) {
                 _recordingResult.value = Result.failure(e)
-            } finally {
                 _isRecording.value = false
+                _isLoading.value = false
+                _showResultSheet.value = true
             }
         }
     }
 
     fun stopRecording() {
-        _isRecording.value = false
-        hijaiyahRepository.stopRecording()
+        if (_isRecording.value) {
+            hijaiyahRepository.stopRecording()
+            _isRecording.value = false
+            _isLoading.value = true
+        }
     }
 
+    fun hideResultSheet() {
+        _showResultSheet.value = false
+        _recordingResult.value = null
+    }
+
+    @SuppressLint("DiscouragedApi")
     fun playAudio(fileName: String) {
         viewModelScope.launch {
             try {
-                // Jika file yang sama sedang diputar, stop
+                // If the same file is playing, stop it
                 if (_isPlaying.value == fileName) {
                     stopAudio()
                     return@launch
                 }
 
-                // Stop audio yang sedang diputar jika ada
+                // Stop any currently playing audio
                 stopAudio()
 
                 // Transform filename format from "01. alif_fathah" to "alif_fathah_01"
                 val transformedFileName = fileName.lowercase().let {
-                    val number = it.substringBefore(".").trim() // Get "01"
-                    val name = it.substringAfter(". ").trim() // Get "alif_fathah"
-                    "${name}_$number" // Combine to "alif_fathah_01"
+                    val number = it.substringBefore(".").trim()
+                    val name = it.substringAfter(". ").trim()
+                    "${name}_$number"
                 }
 
                 // Get resource ID
                 val resourceId = context.resources.getIdentifier(
-                    transformedFileName, // Already in correct format: "alif_fathah_01"
+                    transformedFileName,
                     "raw",
                     context.packageName
                 )
 
                 if (resourceId == 0) {
-                    throw Exception("Audio file not found: $transformedFileName.wav")
+                    throw Exception("Audio file not found: $transformedFileName")
                 }
 
                 mediaPlayer = MediaPlayer.create(context, resourceId).apply {
@@ -111,8 +141,7 @@ class DetailHurufViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _isPlaying.value = null
-                // Show error message
-                _recordingResult.value = Result.failure(Exception("Gagal memutar audio: ${e.message}"))
+                _recordingResult.value = Result.failure(Exception("Failed to play audio: ${e.message}"))
             }
         }
     }

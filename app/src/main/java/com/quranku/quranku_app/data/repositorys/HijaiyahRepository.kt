@@ -3,10 +3,16 @@ package com.quranku.quranku_app.data.repositorys
 import com.quranku.quranku_app.data.PreferencesManager
 import com.quranku.quranku_app.data.api.ApiService
 import com.quranku.quranku_app.ui.util.AudioRecorder
-import okhttp3.MultipartBody
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -17,20 +23,29 @@ class HijaiyahRepository @Inject constructor(
     private val audioRecorder: AudioRecorder,
     private val preferencesManager: PreferencesManager
 ) {
-    suspend fun recordAndPredictAudio(
+
+    fun recordAndPredictAudio(
         huruf: String,
         kondisi: String,
         hasilPrediksi: String
-    ): Result<String> {
-        return try {
-            val token = preferencesManager.getToken() ?: throw Exception("Token not found")
+    ): Flow<Result<String>> = flow {
+        try {
+            // Validate token
+            val token = preferencesManager.getToken()
+            if (token.isNullOrEmpty()) {
+                emit(Result.failure(Exception("Token not found")))
+                return@flow
+            }
+
+            // Get recorded audio data
             val audioData = audioRecorder.record()
 
+            // Prepare date and time formats
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
             val currentDate = Date()
 
-            // Convert to Map<String, RequestBody> with explicit type
+            // Prepare request map
             val requestMap = mapOf<String, RequestBody>(
                 "huruf" to huruf.toRequestBody("text/plain".toMediaType()),
                 "kondisi" to kondisi.toRequestBody("text/plain".toMediaType()),
@@ -39,10 +54,11 @@ class HijaiyahRepository @Inject constructor(
                 "waktu" to timeFormat.format(currentDate).toRequestBody("text/plain".toMediaType())
             )
 
-            // Create audio MultipartBody.Part
+            // Prepare audio part
             val audioRequestBody = audioData.toRequestBody("audio/wav".toMediaType())
             val audioPart = MultipartBody.Part.createFormData("file", "audio.wav", audioRequestBody)
 
+            // Make API call
             val response = apiService.predictAudio(
                 token = "Bearer $token",
                 requestData = requestMap,
@@ -50,17 +66,31 @@ class HijaiyahRepository @Inject constructor(
             )
 
             if (response.isSuccessful) {
-                Result.success(response.body()?.result ?: "Success")
+                val result = response.body()?.result
+                if (result != null) {
+                    emit(Result.success(result))
+                } else {
+                    emit(Result.failure(Exception("Empty response from server")))
+                }
             } else {
-                val errorBody = response.errorBody()?.string()
-                Result.failure(Exception(errorBody ?: "Unknown error"))
+                val errorMsg = response.errorBody()?.string()?.let {
+                    try {
+                        JSONObject(it).getString("msg")
+                    } catch (e: Exception) {
+                        "Sorry, try again later"
+                    }
+                } ?: "Can't connect to server"
+                emit(Result.failure(Exception(errorMsg)))
             }
+        } catch (e: HttpException) {
+            emit(Result.failure(Exception("Network error")))
         } catch (e: Exception) {
-            Result.failure(e)
+            emit(Result.failure(Exception("Can't connect to server")))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     fun stopRecording() {
         audioRecorder.stopRecording()
     }
+
 }
