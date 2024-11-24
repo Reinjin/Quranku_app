@@ -17,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.quranku.quranku_app.R
 import com.quranku.quranku_app.ui.util.Microphone
+import com.quranku.quranku_app.ui.util.Stop_circle
 import com.quranku.quranku_app.ui.util.Volume_up
 import com.quranku.quranku_app.ui.viewmodel.DetailHurufViewModel
 
@@ -132,23 +136,38 @@ fun DetailHurufScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .background(color = Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Huruf Display
             selectedHuruf?.let { huruf ->
                 Card(
-                    modifier = Modifier.size(100.dp),
-                    shape = RoundedCornerShape(8.dp)
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(8.dp),  // Tambah padding di luar card agar shadow terlihat
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,  // Warna background card
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 8.dp,
+                    )
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = Color.White)
+                            .padding(4.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = huruf.huruf,
-                            fontSize = 80.sp,
-                            color = colorResource(id = R.color.blue_dark)
+                            fontSize = 72.sp,
+                            color = colorResource(id = R.color.blue_dark),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.wrapContentSize(align = Alignment.Center)
                         )
                     }
                 }
@@ -165,7 +184,8 @@ fun DetailHurufScreen(
                     KondisiButton(
                         kondisi = kondisi,
                         isSelected = selectedKondisi == kondisi,
-                        onClick = { viewModel.setKondisi(kondisi) }
+                        onClick = { viewModel.setKondisi(kondisi) },
+                        viewModel = viewModel
                     )
                 }
             }
@@ -177,7 +197,7 @@ fun DetailHurufScreen(
                 modifier = Modifier
                     .size(100.dp)
                     .background(
-                        color = if (isRecording) Color.Red else Color(0xFF2B637B),
+                        color = if (isRecording) Color(0xFFBB2B2B) else Color(0xFF2B637B),
                         shape = CircleShape
                     )
                     .clickable {
@@ -200,7 +220,7 @@ fun DetailHurufScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Microphone,
+                    imageVector = if (isRecording) Stop_circle else Microphone,
                     contentDescription = if (isRecording) "Stop Recording" else "Start Recording",
                     tint = Color.White,
                     modifier = Modifier.size(50.dp)
@@ -243,8 +263,14 @@ fun DetailHurufScreen(
 private fun KondisiButton(
     kondisi: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: DetailHurufViewModel
 ) {
+    val selectedHuruf by viewModel.selectedHuruf.collectAsState()
+    val playingFile by viewModel.isPlaying.collectAsState()
+    val currentFile = selectedHuruf?.kondisiKelas?.get(kondisi)
+    val isPlayingThisFile = playingFile == currentFile
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -280,12 +306,23 @@ private fun KondisiButton(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Icon(
-            imageVector = Volume_up,
-            contentDescription = "Sound",
-            tint = Color(0xFF2B637B),
-            modifier = Modifier.size(24.dp)
-        )
+        Box(
+            modifier = Modifier
+                .size(40.dp) // Increase touch target size
+                .clickable {
+                    currentFile?.let { fileName ->
+                        viewModel.playAudio(fileName)
+                    }
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = if (isPlayingThisFile) Stop_circle else Volume_up,
+                contentDescription = if (isPlayingThisFile) "Stop Sound" else "Play Sound",
+                tint = Color(0xFF2B637B),
+                modifier = Modifier.size(24.dp)
+            )
+        }
     }
 }
 
