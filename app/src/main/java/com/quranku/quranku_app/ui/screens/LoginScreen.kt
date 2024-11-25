@@ -49,7 +49,10 @@ fun LoginScreen(navController: NavController = rememberNavController(), viewMode
     val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()

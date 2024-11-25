@@ -55,7 +55,10 @@ fun RegisterScreen(navController: NavController = rememberNavController(), viewM
     val scope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+        ) {
             // Layout utama aplikasi
             Column(
                 modifier = Modifier
