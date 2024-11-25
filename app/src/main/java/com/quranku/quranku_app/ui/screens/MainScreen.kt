@@ -78,7 +78,7 @@ fun MainScreen(
                     .consumeWindowInsets(innerPadding)
                     .fillMaxSize()
                     .padding(
-                        top = 29.dp,
+                        top = 24.dp,
                         bottom = if (navigationMode) 80.dp else 50.dp,
                     )
             ) {

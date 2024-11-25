@@ -166,7 +166,7 @@ fun HomeScreen(
                     painter = painterResource(id = R.drawable.nama_logo),
                     contentDescription = "Logo",
                     modifier = Modifier
-                        .padding(bottom = 20.dp, top = 24.dp, start = 8.dp)
+                        .padding(bottom = 20.dp, top = 28.dp, start = 8.dp)
                 )
                 Text(
                     text = "   Assalamu'alaikum",

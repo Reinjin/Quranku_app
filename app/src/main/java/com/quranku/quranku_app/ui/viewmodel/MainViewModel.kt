@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         if (context is Activity) {
             val windowInsets = ViewCompat.getRootWindowInsets(context.window.decorView)
             val height = windowInsets?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom ?: 130
-            _navigationMode.value = (height == 130)
+            _navigationMode.value = (height > 70)
         }
     }
 }
