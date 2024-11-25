@@ -1,6 +1,7 @@
 package com.quranku.quranku_app.ui.screens
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -13,13 +14,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -29,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -61,6 +65,17 @@ fun DetailHurufScreen(
 
     val showResultSheet by viewModel.showResultSheet.collectAsState()
 
+    // Status Bar Effect
+    SideEffect {
+        val activity = context as? Activity
+        activity?.let {
+            val window = it.window
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = Color.White.toArgb()
+            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
+        }
+    }
+
     LaunchedEffect(hurufId) {
         viewModel.setHuruf(hurufId)
     }
@@ -74,8 +89,8 @@ fun DetailHurufScreen(
             title = { Text("Izin Mikrofon Diperlukan") },
             text = {
                 Text(
-                    "Aplikasi memerlukan izin untuk mengakses mikrofon agar dapat merekam suara. " +
-                            "Silakan berikan izin di pengaturan aplikasi."
+                    stringResource(R.string.audio_permission_alert) +
+                            stringResource(R.string.audio_permission_alert1)
                 )
             },
             confirmButton = {
@@ -101,211 +116,264 @@ fun DetailHurufScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hijaiyah") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                title = {
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Hijaiyah",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.blue_dark)
+                        )
                     }
-                }
+                },
+                navigationIcon = {
+                    Box(
+                        modifier = Modifier.fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
+                                tint = colorResource(id = R.color.blue_dark)
+                            )
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = colorResource(id = R.color.blue_dark)
+                ),
+                modifier = Modifier
+                    .height(80.dp)
+                    .shadow(4.dp)
             )
         }
-    ) { padding ->
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .background(Color.Black)
+                .padding(paddingValues)
         ) {
-            // Main Content
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .background(color = Color.White),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Color.White)
+                    .padding(horizontal = 24.dp)
             ) {
-                // Huruf Display
-                selectedHuruf?.let { huruf ->
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Spacer(modifier = Modifier.height(65.dp))
+
+                    // Huruf Display
+                    selectedHuruf?.let { huruf ->
+                        Card(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .padding(8.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = Color.White)
+                                    .padding(4.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = huruf.huruf,
+                                    fontSize = 72.sp,
+                                    color = colorResource(id = R.color.blue_dark),
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Normal,
+                                    modifier = Modifier.wrapContentSize(align = Alignment.Center)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(55.dp))
+
+                    // Kondisi Buttons
                     Card(
                         modifier = Modifier
-                            .size(120.dp)
-                            .padding(8.dp),
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .background(color = Color.White)
-                                .padding(4.dp),
+                                .padding(12.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = huruf.huruf,
-                                fontSize = 72.sp,
-                                color = colorResource(id = R.color.blue_dark),
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Normal,
-                                modifier = Modifier.wrapContentSize(align = Alignment.Center)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                // Kondisi Buttons Row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    listOf("fathah", "kasroh", "dommah").forEach { kondisi ->
-                        KondisiButton(
-                            kondisi = kondisi,
-                            isSelected = selectedKondisi == kondisi,
-                            onClick = { viewModel.setKondisi(kondisi) },
-                            viewModel = viewModel
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                // Record Button with Permission Check
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(
-                            color = when {
-                                isLoading -> Color.Gray
-                                isRecording -> Color(0xFFBB2B2B)
-                                else -> Color(0xFF2B637B)
-                            },
-                            shape = CircleShape
-                        )
-                        .clickable(enabled = !isLoading) {
-                            when {
-                                audioPermissionState.status.isGranted -> {
-                                    if (isRecording) {
-                                        viewModel.stopRecording()
-                                    } else {
-                                        viewModel.startRecording()
-                                    }
-                                }
-
-                                audioPermissionState.status.shouldShowRationale -> {
-                                    showRationaleDialog = true
-                                }
-
-                                else -> {
-                                    audioPermissionState.launchPermissionRequest()
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                listOf("fathah", "kasroh", "dommah").forEach { kondisi ->
+                                    KondisiButton(
+                                        kondisi = kondisi,
+                                        isSelected = selectedKondisi == kondisi,
+                                        onClick = { viewModel.setKondisi(kondisi) },
+                                        viewModel = viewModel
+                                    )
                                 }
                             }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(70.dp))
+
+                    // Record Button with Permission Check
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(
+                                color = when {
+                                    isLoading -> Color.Gray
+                                    isRecording -> Color(0xFFBB2B2B)
+                                    else -> Color(0xFF2B637B)
+                                },
+                                shape = CircleShape
+                            )
+                            .clickable(enabled = !isLoading) {
+                                when {
+                                    audioPermissionState.status.isGranted -> {
+                                        if (isRecording) {
+                                            viewModel.stopRecording()
+                                        } else {
+                                            viewModel.startRecording()
+                                        }
+                                    }
+
+                                    audioPermissionState.status.shouldShowRationale -> {
+                                        showRationaleDialog = true
+                                    }
+
+                                    else -> {
+                                        audioPermissionState.launchPermissionRequest()
+                                    }
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isRecording) Stop_circle else Microphone,
+                            contentDescription = if (isRecording) "Stop Recording" else "Start Recording",
+                            tint = Color.White,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Instruction Text
+                    Text(
+                        text = when {
+                            isLoading -> "Memproses rekaman..."
+                            isRecording -> "Tekan untuk menghentikan rekaman"
+                            else -> "Tekan mikrofon dan ucapkan huruf diatas sesuai harokat yang dipilih"
                         },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = if (isRecording) Stop_circle else Microphone,
-                        contentDescription = if (isRecording) "Stop Recording" else "Start Recording",
-                        tint = Color.White,
-                        modifier = Modifier.size(50.dp)
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
                     )
                 }
+            }
+        }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Instruction Text
-                Text(
-                    text = when {
-                        isLoading -> "Memproses rekaman..."
-                        isRecording -> "Tekan untuk menghentikan rekaman"
-                        else -> "Tekan mikrofon dan ucapkan huruf diatas"
-                    },
-                    fontSize = 14.sp,
-                    color = Color.Gray
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(48.dp),
+                    color = colorResource(id = R.color.blue_dark)
                 )
             }
         }
-    }
 
-    if (isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                color = colorResource(id = R.color.blue_dark)
-            )
-        }
-    }
-
-    // Result Bottom Sheet
-    if (showResultSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { viewModel.hideResultSheet() },
-            containerColor = Color.White,
-            sheetState = rememberModalBottomSheetState()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+        // Result Bottom Sheet
+        if (showResultSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { viewModel.hideResultSheet() },
+                containerColor = Color.White,
+                sheetState = rememberModalBottomSheetState()
             ) {
-                recordingResult?.fold(
-                    onSuccess = { message ->
-                        Text(
-                            text = if(message == "benar") "Benar" else "Belum Sempurna",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                        Image(
-                            painter = if (message == "benar") painterResource(id = R.drawable.correct_answer_icon) else painterResource(id = R.drawable.wrong_answer_icon),
-                            contentDescription = if (message == "benar") "Correct Answer Icon" else "Wrong Answer Icon",
-                            modifier = Modifier.size(80.dp)
-                        )
-                        Text(
-                            text = if (message == "benar") stringResource(R.string.correct_message) else stringResource(R.string.wrong_message),
-                            fontSize = 16.sp,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    onFailure = { error ->
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = null,
-                            tint = Color.Red,
-                            modifier = Modifier.size(48.dp)
-                        )
-                        Text(
-                            text = "Gagal Melakukan Prediksi",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Red
-                        )
-                        Text(
-                            text = error.message ?: "Maaf Terjadi kesalahan, Silahkan Ulang Kembali",
-                            fontSize = 16.sp,
-                            color = Color.Red,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                )
-
-                Button(
-                    onClick = { viewModel.hideResultSheet() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.blue_dark)
-                    ),
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text("Tutup", fontWeight = FontWeight.Bold)
+                    recordingResult?.fold(
+                        onSuccess = { message ->
+                            Text(
+                                text = if(message == "benar") "Benar" else "Belum Sempurna",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                            Image(
+                                painter = if (message == "benar") painterResource(id = R.drawable.correct_answer_icon) else painterResource(id = R.drawable.wrong_answer_icon),
+                                contentDescription = if (message == "benar") "Correct Answer Icon" else "Wrong Answer Icon",
+                                modifier = Modifier.size(80.dp)
+                            )
+                            Text(
+                                text = if (message == "benar") stringResource(R.string.correct_message) else stringResource(R.string.wrong_message),
+                                fontSize = 16.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        onFailure = { error ->
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = Color.Red,
+                                modifier = Modifier.size(48.dp)
+                            )
+                            Text(
+                                text = "Gagal Melakukan Prediksi",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Red
+                            )
+                            Text(
+                                text = error.message ?: "Maaf Terjadi kesalahan, Silahkan Ulang Kembali",
+                                fontSize = 16.sp,
+                                color = Color.Red,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
+
+                    Button(
+                        onClick = { viewModel.hideResultSheet() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(id = R.color.blue_dark)
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                    ) {
+                        Text("Tutup", fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }
@@ -351,7 +419,7 @@ private fun KondisiButton(
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Box(
             modifier = Modifier

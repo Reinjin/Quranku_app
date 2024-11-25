@@ -6,4 +6,6 @@
     <string name="title_alert_dialog">Izin Lokasi Diperlukan</string>
     <string name="correct_message">Pelafalan kamu sudah cukup bagus, mari lanjutkan untuk terus belajar</string>
     <string name="wrong_message">Pelafalan kamu masih perlu diperbaiki, silahkan bisa ulangi lagi ya!</string>
+    <string name="audio_permission_alert">"Aplikasi memerlukan izin untuk mengakses mikrofon agar dapat merekam suara. "</string>
+    <string name="audio_permission_alert1">Silakan berikan izin di pengaturan aplikasi.</string>
 </resources>
