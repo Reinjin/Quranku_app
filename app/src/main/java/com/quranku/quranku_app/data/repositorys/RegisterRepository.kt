@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import javax.inject.Inject
 
-class RegisterRepository @Inject constructor(
+class RegisterRepository (
     private val apiService: ApiService
 ) {
     fun registerUser(fullName: String, email: String, password: String): Flow<Result<String>> = flow {

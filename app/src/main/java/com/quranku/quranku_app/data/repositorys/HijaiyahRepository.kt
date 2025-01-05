@@ -18,7 +18,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-class HijaiyahRepository @Inject constructor(
+class HijaiyahRepository (
     private val apiService: ApiService,
     private val audioRecorder: AudioRecorder,
     private val preferencesManager: PreferencesManager

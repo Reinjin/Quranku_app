@@ -6,8 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class PreferencesManager @Inject constructor(
+class PreferencesManager(
     @ApplicationContext context: Context
 ) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)

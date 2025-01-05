@@ -11,7 +11,7 @@ import org.json.JSONObject
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class HistoryRepository @Inject constructor(
+class HistoryRepository (
     private val apiService: ApiService,
     private val preferencesManager: PreferencesManager // Inject PreferencesManager
 ) {

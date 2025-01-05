@@ -16,7 +16,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor(
+class HomeRepository (
     private val apiService: ApiService,
     private val preferencesManager: PreferencesManager,
     private val locationRepository: LocationRepository

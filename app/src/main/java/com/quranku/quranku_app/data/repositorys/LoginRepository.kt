@@ -9,7 +9,7 @@ import com.quranku.quranku_app.data.models.LoginRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 
-class LoginRepository @Inject constructor(
+class LoginRepository (
     private val apiService: ApiService
 ) {
     fun loginUser(email: String, password: String): Flow<Result<String>> = flow {

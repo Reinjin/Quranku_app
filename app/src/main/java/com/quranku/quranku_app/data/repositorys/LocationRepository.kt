@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class LocationRepository @Inject constructor(
+class LocationRepository (
     private val fusedLocationProviderClient: FusedLocationProviderClient,
     @ApplicationContext private val context: Context // Inject context to check permissions
 ) {
