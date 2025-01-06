@@ -1,10 +1,10 @@
 package com.quranku.quranku_app.data.api
 
+import com.quranku.quranku_app.data.models.CityLocationResponse
 import com.quranku.quranku_app.data.models.HistoryResponse
 import com.quranku.quranku_app.data.models.LoginRequest
 import com.quranku.quranku_app.data.models.LoginResponse
 import com.quranku.quranku_app.data.models.LogoutResponse
-import com.quranku.quranku_app.data.models.PrayerTimesRequest
 import com.quranku.quranku_app.data.models.PrayerTimesResponse
 import com.quranku.quranku_app.data.models.PredictResponse
 import com.quranku.quranku_app.data.models.ProfileResponse
@@ -36,11 +36,20 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<ProfileResponse>
 
-    @POST("utils/prayer_times")
+    @GET("utils/prayer_times")
     suspend fun getPrayerTimes(
         @Header("Authorization") token: String,
-        @Body data: PrayerTimesRequest
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("date") date: String
     ): Response<PrayerTimesResponse>
+
+    @GET("utils/city_location")
+    suspend fun getCityLocation(
+        @Header("Authorization") token: String,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Response<CityLocationResponse>
 
     @POST("auth/logout")
     suspend fun logout(

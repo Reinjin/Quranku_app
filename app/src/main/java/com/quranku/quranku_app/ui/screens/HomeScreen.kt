@@ -65,6 +65,9 @@ fun HomeScreen(
     val prayerTimes by homeViewModel.prayerTimes.collectAsState()
     val errorMessageTimes by homeViewModel.errorMessageTimes.collectAsState()
 
+    val cityLocation by homeViewModel.cityLocation.collectAsState()
+    val erroCityLocation by homeViewModel.errorMessageCity.collectAsState()
+
     // Inisialisasi izin lokasi
     val context = LocalContext.current
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -86,10 +89,18 @@ fun HomeScreen(
             if (prayerTimes == null) {
                 homeViewModel.loadPrayerTimes()
             }
+            if (cityLocation == null) {
+                homeViewModel.loadCityLocation()
+            }
+
             delay(2000)
             if (errorMessageTimes != null) {
                 Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_SHORT).show()
-                homeViewModel.reseterrorMessageTimes()
+                homeViewModel.resetErrorMessageTimes()
+            }
+            if (erroCityLocation != null) {
+                Toast.makeText(context, "Can't Display CityLocation: $erroCityLocation", Toast.LENGTH_SHORT).show()
+                homeViewModel.resetErrorMessageTimes()
             }
         }
     }
@@ -102,7 +113,7 @@ fun HomeScreen(
         delay(2000)
         if (errorMessageUser != null) {
             Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()
-            homeViewModel.reseterrorMessageUser()
+            homeViewModel.resetErrorMessageUser()
         }
     }
 
@@ -205,7 +216,7 @@ fun HomeScreen(
                         ) {
                             // Text di sebelah kiri
                             Text(
-                                text = "${prayerTimes?.City ?: "---"}, $currentDate",
+                                text = "${cityLocation?.city ?: "---"}, $currentDate",
                                 fontSize = 14.sp,
                                 color = Color.Black
                             )
@@ -224,18 +235,24 @@ fun HomeScreen(
                                         }
                                     } else if (locationPermissionState.status.isGranted) {
                                         showRationaleDialog = false
-                                        homeViewModel.resetNameAndTimes()
+                                        homeViewModel.resetNameTimesAndCity()
                                         // Setelah izin diberikan, panggil loadPrayerTimes
                                         homeViewModel.loadPrayerTimes()
                                         homeViewModel.fetchUserName()
+                                        homeViewModel.loadCityLocation()
                                         coroutineScope.launch{
                                             delay(2000)
                                             if (errorMessageTimes != null) {
                                                 Toast.makeText(context, "Can't Display PrayTimes: $errorMessageTimes", Toast.LENGTH_SHORT).show()
-                                                homeViewModel.reseterrorMessageTimes()
-                                            }else if (errorMessageUser != null) {
+                                                homeViewModel.resetErrorMessageTimes()
+                                            }
+                                            if (errorMessageUser != null) {
                                                 Toast.makeText(context, "Can't Display Username: $errorMessageUser", Toast.LENGTH_SHORT).show()
-                                                homeViewModel.reseterrorMessageUser()
+                                                homeViewModel.resetErrorMessageUser()
+                                            }
+                                            if (erroCityLocation != null) {
+                                                Toast.makeText(context, "Can't Display CityLocation: $erroCityLocation", Toast.LENGTH_SHORT).show()
+                                                homeViewModel.resetErrorMessageCity()
                                             }
                                         }
                                     }
@@ -265,11 +282,11 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            PrayerTimeColumn("Subuh", prayerTimes?.Fajr ?: "--:--")
-                            PrayerTimeColumn("Dzuhur", prayerTimes?.Dhuhr ?: "--:--")
-                            PrayerTimeColumn("Ashar", prayerTimes?.Asr ?: "--:--")
-                            PrayerTimeColumn("Maghrib", prayerTimes?.Maghrib ?: "--:--")
-                            PrayerTimeColumn("Isya", prayerTimes?.Isha ?: "--:--")
+                            PrayerTimeColumn("Subuh", prayerTimes?.fajr ?: "--:--")
+                            PrayerTimeColumn("Dzuhur", prayerTimes?.dhuhr ?: "--:--")
+                            PrayerTimeColumn("Ashar", prayerTimes?.asr ?: "--:--")
+                            PrayerTimeColumn("Maghrib", prayerTimes?.maghrib ?: "--:--")
+                            PrayerTimeColumn("Isya", prayerTimes?.isha ?: "--:--")
                         }
                     }
                 }

@@ -2,6 +2,7 @@ package com.quranku.quranku_app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.quranku.quranku_app.data.models.CityLocationResponse
 import com.quranku.quranku_app.data.models.HurufHijaiyah
 import com.quranku.quranku_app.data.models.PrayerTimesResponse
 import com.quranku.quranku_app.data.models.hurufHijaiyahList
@@ -43,6 +44,12 @@ class HomeViewModel @Inject constructor(
     private val _errorMessageTimes = MutableStateFlow<String?>(null)
     val errorMessageTimes: StateFlow<String?> = _errorMessageTimes.asStateFlow()
 
+    private val _cityLocation = MutableStateFlow<CityLocationResponse?>(null)
+    val cityLocation: StateFlow<CityLocationResponse?> = _cityLocation.asStateFlow()
+
+    private val _errorMessageCity = MutableStateFlow<String?>(null)
+    val errorMessageCity: StateFlow<String?> = _errorMessageCity.asStateFlow()
+
     init {
         _hurufHijaiyahLists.value = hurufHijaiyahList
 
@@ -69,7 +76,7 @@ class HomeViewModel @Inject constructor(
                 }.onFailure { error ->
                     _errorMessageUser.value = error.message
                     delay(5000) // Wait 5 seconds before resetting error
-                    reseterrorMessageUser()
+                    resetErrorMessageUser()
                 }
             }
         }
@@ -83,7 +90,21 @@ class HomeViewModel @Inject constructor(
                 }.onFailure { error ->
                     _errorMessageTimes.value = error.message
                     delay(5000) // Wait 5 seconds before resetting error
-                    reseterrorMessageTimes()
+                    resetErrorMessageTimes()
+                }
+            }
+        }
+    }
+
+    fun loadCityLocation() {
+        viewModelScope.launch {
+            homeRepository.getCityLocation().collect { result ->
+                result.onSuccess { cityLocation ->
+                    _cityLocation.value = cityLocation
+                }.onFailure { error ->
+                    _errorMessageCity.value = error.message
+                    delay(5000) // Wait 5 seconds before resetting error
+                    resetErrorMessageCity()
                 }
             }
         }
@@ -99,16 +120,21 @@ class HomeViewModel @Inject constructor(
         return sdf.format(Date())
     }
 
-    fun reseterrorMessageUser() {
+    fun resetErrorMessageUser() {
         _errorMessageUser.value = null
     }
 
-    fun reseterrorMessageTimes() {
+    fun resetErrorMessageTimes() {
         _errorMessageTimes.value = null
     }
 
-    fun resetNameAndTimes(){
+    fun resetErrorMessageCity() {
+        _errorMessageCity.value = null
+    }
+
+    fun resetNameTimesAndCity(){
         _userName.value = null
         _prayerTimes.value = null
+        _cityLocation.value = null
     }
 }
