@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -94,6 +95,7 @@ dependencies {
 
     //okhttp
     implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
 }
 
