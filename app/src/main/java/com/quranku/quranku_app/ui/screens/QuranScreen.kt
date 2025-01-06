@@ -83,7 +83,7 @@ fun QuranScreen(
             )
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding).padding(bottom = 20.dp)) {
+        Box(modifier = Modifier.padding(innerPadding)) {
             when {
                 isLoading -> {
                     Box(
@@ -149,6 +149,14 @@ fun SurahList(
                     onClick = {
                         onSurahClick(surah.id, surah.transliteration, surah.verses)
                     }
+                )
+            }
+            item{
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(bottom = 10.dp)
                 )
             }
         }

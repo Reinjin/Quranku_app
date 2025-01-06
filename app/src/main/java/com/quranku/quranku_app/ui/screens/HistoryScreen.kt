@@ -98,7 +98,6 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
         Box(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(bottom = 20.dp)
                 .background(Color.White)
                 .pullRefresh(refreshState) // Add pullRefresh here
         ) {
@@ -158,15 +157,23 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
                                         .fillMaxWidth()
                                         // Menambahkan padding bottom agar tidak tertutup bottom navbar
                                         .padding(16.dp)
-                                        .padding(bottom = 60.dp),
+                                        .padding(bottom = 20.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     CircularProgressIndicator(
-                                        modifier = Modifier.size(32.dp),
+                                        modifier = Modifier.size(32.dp).padding(top = 10.dp),
                                         color = colorResource(id = R.color.blue_dark_light)
                                     )
                                 }
                             }
+                        }
+                        item{
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White)
+                                    .padding(bottom = 10.dp)
+                            )
                         }
                     }
                 }
