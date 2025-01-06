@@ -27,7 +27,7 @@ interface ApiService {
     suspend fun registerUser(@Body data: RegisterRequest)
     : Response<RegisterResponse>
 
-    @POST("/auth/login")
+    @POST("auth/login")
     suspend fun loginUser(@Body data: LoginRequest)
     : Response<LoginResponse>
 
@@ -36,13 +36,13 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<ProfileResponse>
 
-    @POST("/utils/prayer_times")
+    @POST("utils/prayer_times")
     suspend fun getPrayerTimes(
         @Header("Authorization") token: String,
         @Body data: PrayerTimesRequest
     ): Response<PrayerTimesResponse>
 
-    @POST("/auth/logout")
+    @POST("auth/logout")
     suspend fun logout(
         @Header("Authorization") token: String
     ): Response<LogoutResponse>
