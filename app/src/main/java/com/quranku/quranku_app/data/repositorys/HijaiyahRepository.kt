@@ -2,6 +2,7 @@ package com.quranku.quranku_app.data.repositorys
 
 import com.quranku.quranku_app.data.PreferencesManager
 import com.quranku.quranku_app.data.api.ApiService
+import com.quranku.quranku_app.data.models.PredictRequest
 import com.quranku.quranku_app.ui.util.AudioRecorder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -9,14 +10,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 
 class HijaiyahRepository (
     private val apiService: ApiService,
@@ -45,13 +44,13 @@ class HijaiyahRepository (
             val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
             val currentDate = Date()
 
-            // Prepare request map
-            val requestMap = mapOf<String, RequestBody>(
-                "huruf" to huruf.toRequestBody("text/plain".toMediaType()),
-                "kondisi" to kondisi.toRequestBody("text/plain".toMediaType()),
-                "hasil_prediksi_diinginkan" to hasilPrediksi.toRequestBody("text/plain".toMediaType()),
-                "tanggal" to dateFormat.format(currentDate).toRequestBody("text/plain".toMediaType()),
-                "waktu" to timeFormat.format(currentDate).toRequestBody("text/plain".toMediaType())
+            // Buat object PredictRequest
+            val predictRequest = PredictRequest(
+                huruf = huruf,
+                kondisi = kondisi,
+                hasil_prediksi_diinginkan = hasilPrediksi,
+                tanggal = dateFormat.format(currentDate),
+                waktu = timeFormat.format(currentDate)
             )
 
             // Prepare audio part
@@ -61,7 +60,7 @@ class HijaiyahRepository (
             // Make API call
             val response = apiService.predictAudio(
                 token = "Bearer $token",
-                requestData = requestMap,
+                requestData = predictRequest.toPartMap(),
                 file = audioPart
             )
 

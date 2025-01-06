@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import retrofit2.HttpException
-import javax.inject.Inject
 
 class HistoryRepository (
     private val apiService: ApiService,

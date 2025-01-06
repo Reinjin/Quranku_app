@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
 class LocationRepository (
     private val fusedLocationProviderClient: FusedLocationProviderClient,
