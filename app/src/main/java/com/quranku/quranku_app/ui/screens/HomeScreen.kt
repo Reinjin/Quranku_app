@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import com.quranku.quranku_app.ui.util.PrayerTimesRow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -278,16 +279,8 @@ fun HomeScreen(
 
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            PrayerTimeColumn("Subuh", prayerTimes?.fajr ?: "--:--")
-                            PrayerTimeColumn("Dzuhur", prayerTimes?.dhuhr ?: "--:--")
-                            PrayerTimeColumn("Ashar", prayerTimes?.asr ?: "--:--")
-                            PrayerTimeColumn("Maghrib", prayerTimes?.maghrib ?: "--:--")
-                            PrayerTimeColumn("Isya", prayerTimes?.isha ?: "--:--")
-                        }
+
+                        PrayerTimesRow(currentTime, prayerTimes)
                     }
                 }
 
@@ -316,14 +309,6 @@ fun HomeScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun PrayerTimeColumn(name: String, time: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = name, fontSize = 12.sp, color = Color.Black)
-        Text(text = time, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
     }
 }
 
