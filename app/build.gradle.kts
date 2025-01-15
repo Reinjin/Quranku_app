@@ -5,6 +5,7 @@ plugins {
 
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -96,6 +97,11 @@ dependencies {
     //okhttp
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
 }
 

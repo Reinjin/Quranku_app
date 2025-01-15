@@ -19,7 +19,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.quranku.quranku_app.R
+import com.quranku.quranku_app.data.models.Verse
 import com.quranku.quranku_app.ui.viewmodel.DetailSurahViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,7 +126,7 @@ fun DetailSurahScreen(
                                 ) {
                                     IconButton(onClick = onBackClick) {
                                         Icon(
-                                            imageVector = Icons.Default.ArrowBack,
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                             contentDescription = "Back",
                                             tint = colorResource(id = R.color.blue_dark)
                                         )
@@ -157,9 +160,10 @@ fun DetailSurahScreen(
                             ) {
                                 items(verses) { verse ->
                                     VerseItem(
-                                        verseNumber = verse.id,
-                                        verseArabic = verse.text,
-                                        verseTranslation = verse.translation
+                                        surahId = surahId,
+                                        surahName = surah.transliteration,
+                                        verse = verse,
+                                        detailSurahViewModel = detailSurahViewModel
                                     )
                                 }
                             }
@@ -187,10 +191,13 @@ fun DetailSurahScreen(
 
 @Composable
 fun VerseItem(
-    verseNumber: Int,
-    verseArabic: String,
-    verseTranslation: String
+    surahId: Int,
+    surahName: String,
+    verse: Verse,
+    detailSurahViewModel: DetailSurahViewModel
 ) {
+    val isLiked by detailSurahViewModel.isVerseLiked(surahId, verse.id).collectAsState()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -206,22 +213,43 @@ fun VerseItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(colorResource(id = R.color.blue_dark), shape = CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = verseNumber.toString(),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(colorResource(id = R.color.blue_dark), shape = CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = verse.id.toString(),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Like Button
+                        IconButton(
+                            onClick = {
+                                detailSurahViewModel.toggleLikeVerse(surahId, surahName, verse)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = "Like Verse",
+                                tint = if (isLiked) Color.Red else Color.Gray
+                            )
+                        }
+                    }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = verseArabic,
+                    text = verse.text,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = colorResource(id = R.color.blue_dark),
@@ -231,7 +259,7 @@ fun VerseItem(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = verseTranslation,
+                text = verse.translation,
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.blue_dark),
                 textAlign = TextAlign.Justify

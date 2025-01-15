@@ -144,6 +144,7 @@ fun SurahList(
                 SurahItem(
                     number = surah.id.toString(),
                     title = surah.transliteration,
+                    translation = surah.translation,
                     ayahCount = "${surah.total_verses} Ayat",
                     arabicTitle = surah.name,
                     onClick = {
@@ -167,10 +168,19 @@ fun SurahList(
 fun SurahItem(
     number: String,
     title: String,
+    translation : String,
     ayahCount: String,
     arabicTitle: String,
     onClick: () -> Unit
 ) {
+    val limitedTitle = ("$title - $translation").let { fullText ->
+        if (fullText.length > 23) {
+            fullText.substring(0, 23) + ".."
+        } else {
+            fullText
+        }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth(0.88f)
@@ -204,7 +214,7 @@ fun SurahItem(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = title,
+                        text = limitedTitle,
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.blue_dark_light)
                     )

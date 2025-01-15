@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.quranku.quranku_app.R
 import com.quranku.quranku_app.data.models.Surah
 import com.quranku.quranku_app.data.models.Verse
+import com.quranku.quranku_app.data.repositorys.LikedVerseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailSurahViewModel @Inject constructor(
-    @ApplicationContext private val context: Context // Menggunakan Application Context
+    @ApplicationContext private val context: Context,
+    private val likedVerseRepository: LikedVerseRepository
 ) : ViewModel() {
 
     private val _surahList = MutableStateFlow<List<Surah>>(emptyList())
@@ -131,6 +133,23 @@ class DetailSurahViewModel @Inject constructor(
             text = text ?: "",
             translation = translation ?: ""
         )
+    }
+
+    fun toggleLikeVerse(surahId: Int, surahName: String, verse: Verse) {
+        viewModelScope.launch {
+            likedVerseRepository.toggleLikeVerse(surahId, surahName, verse)
+        }
+    }
+
+    fun isVerseLiked(surahId: Int, verseNumber: Int): StateFlow<Boolean> {
+        val stateFlow = MutableStateFlow(false)
+        viewModelScope.launch {
+            likedVerseRepository.isVerseLiked(surahId, verseNumber)
+                .collect { isLiked ->
+                    stateFlow.value = isLiked
+                }
+        }
+        return stateFlow.asStateFlow()
     }
 
 }
