@@ -10,6 +10,7 @@ import com.quranku.quranku_app.SplashScreen
 import com.quranku.quranku_app.ui.screens.AboutScreen
 import com.quranku.quranku_app.ui.screens.DetailHurufScreen
 import com.quranku.quranku_app.ui.screens.DetailSurahScreen
+import com.quranku.quranku_app.ui.screens.LikedVersesScreen
 import com.quranku.quranku_app.ui.screens.LoginScreen
 import com.quranku.quranku_app.ui.screens.MainScreen
 import com.quranku.quranku_app.ui.screens.RegisterScreen
@@ -51,6 +52,12 @@ fun AppNavigation(authViewModel: AuthViewModel) {
             val hurufId = backStackEntry.arguments?.getInt("hurufId") ?: return@composable
             DetailHurufScreen(
                 hurufId = hurufId,
+                onBackClick = { navController.navigateUp() }
+            )
+        }
+
+        composable("liked_verses"){
+            LikedVersesScreen(
                 onBackClick = { navController.navigateUp() }
             )
         }

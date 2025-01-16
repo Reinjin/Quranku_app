@@ -18,6 +18,6 @@ interface LikedVerseDao {
     @Query("SELECT * FROM liked_verses WHERE surahId = :surahId AND verseNumber = :verseNumber")
     fun isVerseLiked(surahId: Int, verseNumber: Int): Flow<LikedVerseEntity?>
 
-    @Query("SELECT * FROM liked_verses ORDER BY timestamp DESC")
+    @Query("SELECT * FROM liked_verses ORDER BY surahId ASC, verseNumber ASC")
     fun getAllLikedVerses(): Flow<List<LikedVerseEntity>>
 }

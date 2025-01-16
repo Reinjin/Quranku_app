@@ -8,19 +8,24 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -62,16 +67,39 @@ fun QuranScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Box(
-                        modifier = Modifier.fillMaxHeight(),
-                        contentAlignment = Alignment.Center
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, end = 20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Surah",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.blue_dark),
-                        )
+                        Box(
+                            modifier = Modifier.wrapContentSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Surah",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(id = R.color.blue_dark),
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier.size(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate("liked_verses")
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Favorite,
+                                    contentDescription = "Like Verse List",
+                                    tint = colorResource(id = R.color.blue_dark)
+                                )
+                            }
+                        }
                     }
                 },
                 // Tambahkan warna latar belakang untuk TopAppBar
@@ -122,7 +150,7 @@ fun SurahList(
     onSurahClick: (Int, String, List<Verse>) -> Unit
 ) {
     // Log untuk debugging
-    Log.d("SurahList", "Jumlah surah: ${surahList.size}")
+    //Log.d("SurahList", "Jumlah surah: ${surahList.size}")
 
     if (surahList.isEmpty()) {
         Text(

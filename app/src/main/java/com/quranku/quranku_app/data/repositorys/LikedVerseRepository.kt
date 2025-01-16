@@ -56,4 +56,11 @@ class LikedVerseRepository @Inject constructor(
             verseTranslation = verseTranslation
         )
     }
+
+    suspend fun deleteLikeVerse(
+        surahId: Int,
+        verseId: Int
+    ) {
+        likedVerseDao.deleteLikedVerse(surahId, verseId)
+    }
 }
